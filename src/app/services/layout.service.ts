@@ -28,10 +28,10 @@ interface MenuChangeEvent {
 export class LayoutService {
     _config: layoutConfig = {
         preset: 'Aura',
-        primary: 'emerald',
+        primary: 'sky',
         surface: null,
         darkTheme: false,
-        menuMode: 'static'
+        menuMode: 'overlay'
     };
 
     _state: LayoutState = {
@@ -135,7 +135,7 @@ export class LayoutService {
         });
     }
 
-    onMenuToggle() {
+    onMenuToggle() {        
         if (this.isOverlay()) {
             this.layoutState.update((prev) => ({ ...prev, overlayMenuActive: !this.layoutState().overlayMenuActive }));
 

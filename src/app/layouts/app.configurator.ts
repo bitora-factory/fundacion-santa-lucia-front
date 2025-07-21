@@ -9,6 +9,7 @@ import Nora from '@primeng/themes/nora';
 import { PrimeNG } from 'primeng/config';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { LayoutService } from '../services/layout.service';
+import { TooltipModule } from 'primeng/tooltip';
 
 const presets = {
     Aura,
@@ -39,7 +40,7 @@ declare type SurfacesType = {
 @Component({
     selector: 'app-configurator',
     standalone: true,
-    imports: [CommonModule, FormsModule, SelectButtonModule],
+    imports: [CommonModule, FormsModule, SelectButtonModule, TooltipModule],
     template: `
         <div class="flex flex-col gap-4">
             <div>
@@ -48,6 +49,7 @@ declare type SurfacesType = {
                     @for (primaryColor of primaryColors(); track primaryColor.name) {
                         <button
                             type="button"
+                            [pTooltip]="primaryColor.name"
                             [title]="primaryColor.name"
                             (click)="updateColors($event, 'primary', primaryColor)"
                             [ngClass]="{ 'outline-primary': primaryColor.name === selectedPrimaryColor() }"

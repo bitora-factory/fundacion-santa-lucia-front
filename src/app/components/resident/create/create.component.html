@@ -1,0 +1,135 @@
+<p-button 
+    (onClick)="showDialog()" 
+    label="Registrar" 
+    class="btn-register"
+/>
+<p-dialog 
+    header="Registrar residente" 
+    [modal]="true" 
+    [(visible)]="visible" 
+    [style]="{ width: '50rem' }"
+    (onHide)="onResidentFormHide()">
+    <form [formGroup]="residetForm">
+        <div class="mt-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="gap-3 mb-7">
+                    <p-floatlabel>
+                        <input id="name" pInputText formControlName="name" />
+                        <label for="name">Nombres y apellidos</label>
+                    </p-floatlabel>
+                </div>
+                <div class="gap-3 mb-7">
+                    <p-floatlabel>
+                        <p-inputnumber inputId="dni" formControlName="dni" />
+                        <label for="dni">Cédula</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="gap-3 mb-7">
+                    <p-floatlabel class="w-full md:w-56">
+                        <p-select 
+                            inputId="accommodation" 
+                            formControlName="accomodation" 
+                            [options]="accomodationOptions" 
+                            optionLabel="name"
+                            optionValue="id"
+                            styleClass="w-full" 
+                            appendTo="body" 
+                        />
+                        <label for="accommodation">Acomodación</label>
+                    </p-floatlabel>
+                </div>
+                <div class="gap-3 mb-7">
+                    <p-floatlabel>
+                        <input id="guardian" pInputText formControlName="guardian" />
+                        <label for="guardian">Acudiente</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="gap-3 mb-7">
+                    <p-floatlabel class="w-full md:w-56">
+                        <p-inputnumber inputId="guardianDni" formControlName="guardianDni" />
+                        <label for="guardianDni">Cédula acudiente</label>
+                    </p-floatlabel>
+                </div>
+                <div class="gap-3 mb-7">
+                    <p-floatlabel>
+                        <input id="guardianAddress" pInputText formControlName="address" />
+                        <label for="guardianAddress">Dirección</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="gap-3 mb-7">
+                    <p-floatlabel class="w-full md:w-56">
+                        <p-inputnumber inputId="value" formControlName="value" />
+                        <label for="value">Valor unitario</label>
+                    </p-floatlabel>
+                </div>
+                <div class="gap-3 mb-7">
+                    <p-floatlabel>
+                        <p-datepicker 
+                            formControlName="entryDate"
+                            inputId="icondisplay" 
+                            id="entryDate"
+                            appendTo="body"
+                            [iconDisplay]="'input'" 
+                            [showIcon]="true" 
+                            dateFormat="dd/mm/yy"
+                        />
+                        <label for="entryDate">Fecha de ingreso</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="gap-3 mb-7">
+                    <p-floatlabel class="w-full md:w-56">
+                        <input id="phone" pInputText formControlName="phone" />
+                        <label for="phone">Teléfono</label>
+                    </p-floatlabel>
+                </div>
+                <div class="gap-3 mb-7">
+                    <p-floatlabel>
+                        <p-inputnumber inputId="months" formControlName="months" />
+                        <label for="months">Meses</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="gap-3 mb-7">
+                    <p-floatlabel class="w-full md:w-56">
+                        <p-select 
+                            inputId="payment" 
+                            formControlName="payment" 
+                            [options]="paymentOptions" 
+                            optionLabel="name"
+                            optionValue="id"
+                            styleClass="w-full" 
+                            appendTo="body"
+                        />
+                        <label for="payment">Forma de pago</label>
+                    </p-floatlabel>
+                </div>
+                <div class="gap-3 mb-7">
+                    <p-floatlabel class="w-full md:w-56">
+                        <p-select 
+                            inputId="status" 
+                            formControlName="status" 
+                            [options]="statusOptions" 
+                            optionLabel="name"
+                            optionValue="id"
+                            styleClass="w-full" 
+                            appendTo="body"
+                        />
+                        <label for="status">Estado</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+            <div class="flex justify-center gap-2">
+                <p-button label="Guardar" (onClick)="confirmSave()" />
+            </div>
+        </div>
+    </form>
+</p-dialog>

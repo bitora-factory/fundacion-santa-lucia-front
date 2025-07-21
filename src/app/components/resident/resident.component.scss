@@ -1,0 +1,23 @@
+.status {
+  display: block;
+  text-align: center;
+  width: 6.5rem;
+  text-transform: lowercase;
+  padding: 3px;
+  color: white;
+  border-radius: 0.5rem;
+  padding-block: 0.2rem;
+  padding-inline: 0.5rem;
+  box-shadow: 1px 1px 2px black;
+  &.active {
+    background-color: var(--p-emerald-400);
+  }
+
+  &.inactive {
+    background-color: var(--p-rose-400);
+  }
+
+  &.deceased {
+    background-color: var(--p-gray-400);
+  }
+}

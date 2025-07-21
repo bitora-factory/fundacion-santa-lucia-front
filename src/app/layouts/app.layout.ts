@@ -3,19 +3,27 @@ import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { AppTopbar } from './topbar/app.topbar';
-// import { AppSidebar } from './app.sidebar';
 // import { AppFooter } from './app.footer';
 import { LayoutService } from '../services/layout.service';
 import { ToastModule } from 'primeng/toast';
+import { AppSidebar } from './app.sidebar';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [CommonModule, AppTopbar/* , AppSidebar */, RouterModule/* , AppFooter */, ToastModule],
+    imports: [
+        CommonModule, 
+        AppTopbar, 
+        AppSidebar, 
+        RouterModule/* , AppFooter */, 
+        ToastModule,
+        TooltipModule
+    ],
     template: `<div class="layout-wrapper" [ngClass]="containerClass">
         <p-toast />
         <app-topbar></app-topbar>
-        <!-- <app-sidebar></app-sidebar> -->
+        <app-sidebar></app-sidebar>
         <div class="layout-main-container">
             <div class="layout-main">
                 <router-outlet></router-outlet>
@@ -30,7 +38,7 @@ export class AppLayout {
 
     menuOutsideClickListener: any;
 
-    // @ViewChild(AppSidebar) appSidebar!: AppSidebar;
+    @ViewChild(AppSidebar) appSidebar!: AppSidebar;
 
     @ViewChild(AppTopbar) appTopBar!: AppTopbar;
 

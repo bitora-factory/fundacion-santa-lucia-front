@@ -1,0 +1,56 @@
+<app-create
+    [selected]="selectedResident"
+    (created)="loadResidents()"
+></app-create>
+<p-table 
+    scrollHeight="600px"
+    selectionMode="multiple"
+    [value]="residents" 
+    [tableStyle]="{ 'min-width': 'max-content' }" 
+    [scrollable]="true" 
+>
+    <ng-template pTemplate="header">
+        <tr>
+            <th *ngFor="let col of getRegularColumns()" [ngClass]="col.class">{{col.header}}</th>
+            <th *ngFor="let col of getFrozenColumns()" [ngClass]="col.class" pFrozenColumn [frozen]="true" alignFrozen="right">{{col.header}}</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-resident let-rowIndex="rowIndex">
+        <tr [pSelectableRow]="resident" [pSelectableRowIndex]="rowIndex">
+            <td *ngFor="let col of getRegularColumns()" [ngClass]="col.class">
+                @switch (col.field) {
+                    @case ('id') { {{ resident.id }} }
+                    @case ('name') { {{ resident.name }} }
+                    @case ('dni') { {{ resident.dni | number: '1.0-0'}} }
+                    @case ('accomodation') { {{ enumService.getEnumName('accomodation', resident.accomodation) }} }
+                    @case ('guardian') { {{ resident.guardian }} }
+                    @case ('guardianDni') { {{ resident.guardianDni | number: '1.0-0'}} }
+                    @case ('address') { {{ resident.address }} }
+                    @case ('value') { $ {{ resident.value | number: '1.0-2'}} }
+                    @case ('entryDate') { {{ resident.entryDate | date: 'dd/MM/yyyy'}} }
+                    @case ('phone') { {{ resident.phone }} }
+                    @case ('months') { {{ resident.months }} }
+                    @case ('payment') { {{ enumService.getEnumName('payment', resident.payment) }} }
+                    @case ('status') { 
+                        <span [ngClass]="enumService.getEnumClass('status', resident.status)">
+                                {{ enumService.getEnumName('status', resident.status) }}
+                        </span> 
+                    }
+                }
+            </td>
+            <td *ngFor="let col of getFrozenColumns()" [ngClass]="col.class" pFrozenColumn [frozen]="true" alignFrozen="right">
+                @switch (col.field) {
+                    @case ('actions') {
+                        <p-button
+                            icon="pi pi-pencil"
+                            pTooltip="Editar residente"
+                            tooltipPosition="left"
+                            (click)="editResident(resident)"
+                        ></p-button>
+                        <!-- <button (click)="(resident.id)">Delete</button> -->
+                    }
+                }
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

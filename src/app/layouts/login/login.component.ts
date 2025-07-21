@@ -29,8 +29,9 @@ export class LoginComponent {
 
   onLoginClick(): void {
     this._authService.login({ email: this.email, password: this.password }).subscribe({
-      next: () => {
+      next: (response) => {
         this.show('Ingresó correctamente');
+        console.log('login', response);
       },
       error: () => {
         this.show('Credenciales incorrectas');
