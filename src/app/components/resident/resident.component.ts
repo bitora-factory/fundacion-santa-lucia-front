@@ -1,49 +1,54 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { TableModule } from 'primeng/table';
-import { COLUMNS } from '../../metadata/resident.metadata';
-import { CreateComponent } from "./create/create.component";
+import { RESIDENT_COLUMNS } from '../../metadata/resident.metadata';
+import { CreateResidentComponent } from "./create/create-resident.component";
 import { TooltipModule } from 'primeng/tooltip';
 import { Button, ButtonModule } from 'primeng/button';
 import { ResidentService } from '../../services/resident.service';
 import { EnumService } from '../../services/enum.service';
 import { ResidentModel } from '../../models/resident.model';
 import { TableInterface } from '../../models/interfaces/table.interface';
+import { AbstractComponent } from '../../abstract-component';
+import { takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-resident',
+  selector: 'app-list-resident',
   imports: [
     CommonModule,
     TableModule,
-    CreateComponent,
+    CreateResidentComponent,
     TooltipModule,
     ButtonModule
   ],
   templateUrl: './resident.component.html',
   styleUrl: './resident.component.scss'
 })
-export class ResidentComponent implements OnInit {
+export class ResidentComponent extends AbstractComponent implements OnInit {
   residents: ResidentModel[] = [];
-  columns: TableInterface[] = COLUMNS;
+  columns: TableInterface[] = RESIDENT_COLUMNS;
   selectedResident: ResidentModel | null = null;
 
   constructor(
     private residentService: ResidentService,
     readonly enumService: EnumService
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.loadResidents();
   }
 
   loadResidents() {
-    this.residentService.findAll().subscribe(residents => {
-      this.residents = residents;
-      residents.forEach(resident => {
-        console.log('resident type:', typeof resident.entryDate);
-        
-      })
-    });
+    this.residentService.findAll()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(residents => {
+        this.residents = residents;
+        residents.forEach(resident => {
+          console.log('resident type:', typeof resident.entryDate);
+        });
+      });
   }
 
   handleResidentCreated(resident: ResidentModel) {

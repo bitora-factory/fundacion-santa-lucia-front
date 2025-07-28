@@ -12,4 +12,5 @@ export interface ResidentModel {
     months: number;
     payment: number;
     status: number;
+    idName: string;
 }

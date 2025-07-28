@@ -1,0 +1,211 @@
+<p-button 
+    (onClick)="showDialog()" 
+    label="Generar" 
+    class="btn-register"
+/>
+<p-dialog 
+    header="Recibo en blanco" 
+    [modal]="true" 
+    [(visible)]="visible" 
+    [style]="{ width: '55rem' }"
+    (onHide)="resetReceiptData()"
+    [closeOnEscape]="false">
+        <div class="grid grid-cols-12 mb-2">
+            <div class="col-span-2 flex items-center justify-end pr-2">
+                <label for="residents">Buscar residente:</label>
+            </div>
+            <div class="col-span-10">
+                <!-- <p-input-number
+                    id="residents"
+                    [(ngModel)]="residentId"
+                    (keypress)="findResident($event)"
+                /> -->
+                <p-select 
+                    id="residents"
+                    [(ngModel)]="residentId"
+                    [options]="residents"
+                    optionLabel="idName"
+                    optionValue="id"
+                    placeholder="Seleccione un residente"
+                    (onChange)="findResident()"
+                    [showClear]="true"
+                    [filter]="true"
+                    filterBy="idName"
+                    class="w-full"
+                />
+            </div>
+        </div>
+        <div class="receipt-container" #receiptContainer>
+            <div class="receipt-header">
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-2">
+                    <div class="text-center font-bold text-xl">FUNDACIÓN CASA SANTA LUCÍA</div>
+                </div>
+                <div class="grid grid-cols-12 gap-4 mb-6 text-center items-center">
+                    <div class="col-span-3 flex justify-center items-center">
+                        <img src="assets/img/santa_lucia_logo.png" class="icon" alt="">
+                    </div>
+                    <div class="col-span-6">
+                        <div>NIT: 901381837-1</div>
+                        <div>Km 7 vía a Altagracia - Pereira / Risaralda</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="receipt-body">
+                <div class="basic-infomation receipt-border mb-6">
+                    <div class="grid grid-cols-12">
+                        <div class="col-span-2 cell cell-bold">Fecha</div>
+                        <div class="col-span-4 cell">{{ receiptData?.payment?.date | date: 'dd/MM/yyyy' }}</div>
+                        <div class="col-span-4 cell cell-bold">Número de recibo</div>
+                        <div class="col-span-2 cell">{{ receiptData?.payment?.receiptNumber }}</div>
+                    </div>
+                    <div class="grid grid-cols-12">
+                        <div class="col-span-2 cell cell-bold">Responsable</div>
+                        <div class="col-span-6 cell">{{ receiptData?.payment?.resident?.guardian }}</div>
+                        <div class="col-span-2 cell cell-bold">No. Documento</div>
+                        <div class="col-span-2 cell">{{ receiptData?.payment?.resident?.guardianDni }}</div>
+                    </div>
+                    <div class="grid grid-cols-12">
+                        <div class="col-span-2 cell cell-bold">Residente</div>
+                        <div class="col-span-6 cell">{{ receiptData?.payment?.resident?.name }}</div>
+                        <div class="col-span-2 cell cell-bold">No. Documento</div>
+                        <div class="col-span-2 cell">{{ receiptData?.payment?.resident?.dni }}</div>
+                    </div>
+                    <div class="grid grid-cols-12">
+                        <div class="col-span-2 cell cell-bold">No. Residente</div>
+                        <div class="col-span-1 cell text-center">{{ receiptData?.payment?.resident?.id }}</div>
+                        <div class="col-span-2 cell cell-bold">Tel. Contacto</div>
+                        <div class="col-span-5 cell">{{ receiptData?.payment?.resident?.phone }}</div>
+                        <div class="col-span-2 cell">PEREIRA</div>
+                    </div>
+                </div>
+                
+                <div class="payment-details receipt-border mb-6">
+                    <p-table 
+                        [value]=" receiptData?.paymentDetails ?? paymentDetails" 
+                        dataKey="id"
+                        [tableStyle]="{ 'min-width': '50rem' }">
+                        <ng-template #header>
+                            <tr>
+                                <th class="cell cell-blue" style="width: 14%;">Código</th>
+                                <th class="cell cell-blue" style="width: 50%;">Artículo</th>
+                                <th class="cell cell-blue" style="width: 12%;">Unidades</th>
+                                <th class="cell cell-blue" style="width: 12%;">Precio Un.</th>
+                                <th class="cell cell-blue" style="width: 12%;">Total</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template #body let-paymentDetail let-editing="editing" >
+                            <tr>
+                                <td class="cell">
+                                    {{ paymentDetail.code }}
+                                </td>
+                                <td class="cell" pEditableColumn="paymentDetail.article" pEditableColumnField="article">
+                                    @if (paymentDetail.id !== -1) {
+                                        <p-cellEditor>
+                                            <ng-template #input>
+                                                <input
+                                                    pInputText
+                                                    type="text"
+                                                    [(ngModel)]="paymentDetail.article"
+                                                    class="w-full" />
+                                            </ng-template>
+                                            <ng-template #output>
+                                                {{ paymentDetail.article }}
+                                            </ng-template>
+                                        </p-cellEditor>
+                                        }@else {
+                                            {{ paymentDetail.article }}
+                                        }
+                                </td>
+                                <td class="cell !text-center" pEditableColumn="paymentDetail.units" pEditableColumnField="units">
+                                    @if (paymentDetail.id !== -1) {
+                                        <p-cellEditor>
+                                            <ng-template #input>
+                                                <p-inputnumber
+                                                    [(ngModel)]="paymentDetail.units"
+                                                    (ngModelChange)="calculateTotal(paymentDetail)"
+                                                    class="w-full text-center" />
+                                            </ng-template>
+                                            <ng-template #output>
+                                                {{ paymentDetail.units }}
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    }@else {
+                                        {{ paymentDetail.units }}
+                                    }
+                                </td>
+                                <td class="cell !text-end" pEditableColumn="paymentDetail.unitPrice" pEditableColumnField="unitPrice">
+                                    @if (paymentDetail.id !== -1) {
+                                        <p-cellEditor>
+                                            <ng-template #input>
+                                                <p-inputnumber
+                                                    [(ngModel)]="paymentDetail.unitPrice"
+                                                    (ngModelChange)="calculateTotal(paymentDetail)"
+                                                    class="w-full text-right" />
+                                            </ng-template>
+                                            <ng-template #output>
+                                                {{ paymentDetail.unitPrice ? '$' : ''}}
+                                                {{ paymentDetail.unitPrice | number: '1.0-0' }}
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    }@else {
+                                        {{ paymentDetail.unitPrice ? '$' : ''}}
+                                        {{ paymentDetail.unitPrice | number: '1.0-0' }}
+                                    }
+                                </td>
+                                <td class="cell !text-end">
+                                    {{ paymentDetail.total ? '$' : ''}}
+                                    {{ paymentDetail.total | number: '1.0-0' }}
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                    <div class="grid grid-cols-12">
+                        <div class="col-span-10 cell cell-blue">TOTAL RECIBIDO</div>
+                        <div class="col-span-2 cell cell-blue">{{ receiptData?.payment?.totalAmount | number: '1.0-0' }}</div>
+                    </div>
+                </div>
+
+                <div class="payment-footer">
+                    <div class="grid grid-cols-12">
+                        <div class="col-span-4 receipt-border">
+                            <div class="cell cell-blue">Forma de pago</div>
+                            <div class="grid grid-cols-1 md:grid-cols-2">
+                                <div class="cell cell-bold">Efectivo</div>
+                                <div class="cell text-center">
+                                    @if (receiptData?.payment) {
+                                        {{ receiptData?.payment?.resident?.payment === 1 ? 'X' : '' }}
+                                    }
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2">
+                                <div class="cell cell-bold">Bancario</div>
+                                <div class="cell text-center">
+                                    @if (receiptData?.payment) {
+                                        {{ receiptData?.payment?.resident?.payment !== 1 ? 'X' : '' }}
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-span-8 flex flex-col justify-end items-end">
+                            <div class="font-bold mb-1 w-1/2" style="border-bottom: 1px solid black;"></div>
+                            <div class="cell cell-blue w-1/2">Firma de quien recibe</div>
+                            <!-- <div class="grid grid-cols-1 md:grid-cols-2">
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ng-template #footer>
+            <div class="flex !justify-center gap-3">
+                <p-button 
+                    (onClick)="savePayment()" 
+                    [disabled]="!receiptData"
+                    label="Generar recibo" 
+                    icon="pi pi-download"
+                    severity="success"
+                />
+            </div>
+        </ng-template>
+</p-dialog>

@@ -1,7 +1,7 @@
-<app-create
+<app-create-resident
     [selected]="selectedResident"
     (created)="loadResidents()"
-></app-create>
+></app-create-resident>
 <p-table 
     scrollHeight="600px"
     selectionMode="multiple"
@@ -47,7 +47,6 @@
                             tooltipPosition="left"
                             (click)="editResident(resident)"
                         ></p-button>
-                        <!-- <button (click)="(resident.id)">Delete</button> -->
                     }
                 }
             </td>

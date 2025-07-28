@@ -1,6 +1,6 @@
 import { TableInterface } from "../models/interfaces/table.interface";
 
-export const COLUMNS: TableInterface[] = [
+export const RESIDENT_COLUMNS: TableInterface[] = [
     { field: 'id', header: 'No', class: '!text-center' },
     { field: 'name', header: 'NOMBRE', class: '' },
     { field: 'dni', header: 'CÉDULA', class: '' },
