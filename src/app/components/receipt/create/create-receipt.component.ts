@@ -16,6 +16,7 @@ import { ResidentModel } from '../../../models/resident.model';
 import { SelectModule } from 'primeng/select';
 import { AbstractComponent } from '../../../abstract-component';
 import { PaymentService } from '../../../services/payment.service';
+import { EnumService } from '../../../services/enum.service';
 
 @Component({
   selector: 'app-create',
@@ -41,7 +42,7 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
   paymentDetails: PaymentDetailModel[] = [
     {
       id: null,
-      code: 'AH',
+      code: 'Mensualidad',
       article: '',
       units: null,
       unitPrice: null,
@@ -64,6 +65,7 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
   private alertService = inject(AlertService);
   private loadingService = inject(LoadingService);
   private paymentService = inject(PaymentService);
+  private enumService = inject(EnumService);
 
   constructor() {
     super();
@@ -136,6 +138,7 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
         const entryDate = new Date(resident.entryDate);
         const sinceDate = this.addMonths(entryDate, resident.months);
         const untilDate = this.addMonths(sinceDate, 1);
+        const accomodation = this.enumService.getEnumName('accomodation', resident.accomodation)
 
         this.receiptData = {
           payment: {
@@ -148,8 +151,8 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
           paymentDetails: [
             {
               id: -1,
-              code: 'AH',
-              article: `Acomodación del ${this.formatDate(sinceDate)} hasta el ${this.formatDate(untilDate)}`,
+              code: 'Mensualidad',
+              article: `Acomodación ${accomodation} del ${this.formatDate(sinceDate)} hasta el ${this.formatDate(untilDate)}`,
               units: 1,
               unitPrice: resident.value,
               total: resident.value
