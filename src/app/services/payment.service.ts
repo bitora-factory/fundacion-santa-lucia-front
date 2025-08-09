@@ -13,5 +13,9 @@ export class PaymentService extends BaseCrudService<any
         super(http);
     }
 
+    getConsecutive(): Observable<number> {
+        return this.http.get<number>(`${this.apiUrl}/${this.endpoint}/consecutive-number`);
+    }
+
     /* Additional methods specific to residents can be added here */
 }

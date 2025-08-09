@@ -60,6 +60,7 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
   receiptData: ReceiptInterface | null = null;
   residentId: number | null = null;
   residents: ResidentModel[] = [];
+  consecutiveNumber: number | null = null;
 
   private residentService = inject(ResidentService);
   private alertService = inject(AlertService);
@@ -72,11 +73,21 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
   }
 
   ngOnInit(): void {
+
   }
 
   showDialog() {
     this.visible = true;
     this.getResidents();
+    this.getConsecutiveNumber();
+  }
+
+  private getConsecutiveNumber() {
+    this.paymentService.getConsecutive()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(consecutiveNumber => {
+        this.consecutiveNumber = consecutiveNumber;
+      });
   }
 
   private getResidents() {
@@ -138,12 +149,12 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
         const entryDate = new Date(resident.entryDate);
         const sinceDate = this.addMonths(entryDate, resident.months);
         const untilDate = this.addMonths(sinceDate, 1);
-        const accomodation = this.enumService.getEnumName('accomodation', resident.accomodation)
+        const accomodation = this.enumService.getEnumName('accomodation', resident.accomodation);
 
         this.receiptData = {
           payment: {
             id: null,
-            receiptNumber: '1',
+            receiptNumber: this.consecutiveNumber as number,
             date: new Date(),
             totalAmount: resident.value,
             resident: resident
@@ -250,6 +261,7 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
 
         // Mostrar mensaje de éxito
         this.alertService.success('PDF descargado exitosamente');
+        this.visible = false; // Cerrar el diálogo después de descargar el PDF
       }
     } catch (error) {
       console.error('Error al generar PDF:', error);
