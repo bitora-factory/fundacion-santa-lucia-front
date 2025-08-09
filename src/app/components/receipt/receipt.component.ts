@@ -24,23 +24,21 @@ import { takeUntil } from 'rxjs';
 export class ReceiptComponent extends AbstractComponent implements OnInit {
 
   payments: PaymentModel[] = [];
-
   private paymentService = inject(PaymentService);
 
   constructor() {
-    // Initialize or fetch payments data here
     super();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadPayments();
   }
 
-  loadPayments() {
+  private loadPayments() {
     this.paymentService.findAll()
       .pipe(takeUntil(this.destroy$))
       .subscribe(payments => {
-        this.payments = payments;
+        this.payments = payments
       });
   }
   /* 
