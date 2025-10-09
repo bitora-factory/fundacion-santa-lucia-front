@@ -3,3 +3,7 @@
 @use "./assets/layout/layout.scss";
 @use "primeicons/primeicons.css";
 
+.btn-basic {
+  display: flex;
+  margin-bottom: 1rem;
+}

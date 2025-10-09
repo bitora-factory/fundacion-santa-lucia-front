@@ -1,7 +1,7 @@
 <p-button 
     (onClick)="showDialog()" 
     label="Generar" 
-    class="btn-register"
+    class="btn-basic"
 />
 <p-dialog 
     header="Recibo en blanco" 
@@ -55,7 +55,7 @@
                 <div class="basic-infomation receipt-border mb-6">
                     <div class="grid grid-cols-12">
                         <div class="col-span-2 cell cell-bold">Fecha</div>
-                        <div class="col-span-4 cell">{{ receiptData?.payment?.date | date: 'dd/MM/yyyy' }}</div>
+                        <div class="col-span-4 cell">{{ receiptData?.payment?.date | date: 'dd/MM/yyyy':'':'es-CO' }}</div>
                         <div class="col-span-4 cell cell-bold">Número de recibo</div>
                         <div class="col-span-2 cell">{{ receiptData?.payment?.receiptNumber }}</div>
                     </div>
@@ -99,22 +99,22 @@
                                 <td class="cell">
                                     {{ paymentDetail.code }}
                                 </td>
-                                <td class="cell" pEditableColumn="paymentDetail.article" pEditableColumnField="article">
+                                <td class="cell" pEditableColumn="paymentDetail.detail" pEditableColumnField="detail" style="white-space: pre-line;">
                                     @if (paymentDetail.id !== -1) {
                                         <p-cellEditor>
                                             <ng-template #input>
                                                 <input
                                                     pInputText
                                                     type="text"
-                                                    [(ngModel)]="paymentDetail.article"
+                                                    [(ngModel)]="paymentDetail.detail"
                                                     class="w-full" />
                                             </ng-template>
                                             <ng-template #output>
-                                                {{ paymentDetail.article }}
+                                                {{ paymentDetail.detail }}
                                             </ng-template>
                                         </p-cellEditor>
                                         }@else {
-                                            {{ paymentDetail.article }}
+                                            {{ paymentDetail.detail }}
                                         }
                                 </td>
                                 <td class="cell !text-center" pEditableColumn="paymentDetail.units" pEditableColumnField="units">
@@ -174,7 +174,7 @@
                                 <div class="cell cell-bold">Efectivo</div>
                                 <div class="cell text-center">
                                     @if (receiptData?.payment) {
-                                        {{ receiptData?.payment?.resident?.payment === 1 ? 'X' : '' }}
+                                        {{ receiptData?.payment?.resident?.paymentMethod === "1" ? 'X' : '' }}
                                     }
                                 </div>
                             </div>
@@ -182,7 +182,7 @@
                                 <div class="cell cell-bold">Bancario</div>
                                 <div class="cell text-center">
                                     @if (receiptData?.payment) {
-                                        {{ receiptData?.payment?.resident?.payment !== 1 ? 'X' : '' }}
+                                        {{ receiptData?.payment?.resident?.paymentMethod !== "1" ? 'X' : '' }}
                                     }
                                 </div>
                             </div>

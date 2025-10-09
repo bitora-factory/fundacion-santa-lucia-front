@@ -3,28 +3,28 @@ import { Observable } from 'rxjs';
 import { environment } from '../enviroment';
 
 export abstract class BaseCrudService<T> {
-    protected abstract endpoint: string;
+    protected abstract controller: string;
     protected apiUrl = environment.apiUrl;
 
     constructor(protected http: HttpClient) { }
 
     findAll(): Observable<T[]> {
-        return this.http.get<T[]>(`${this.apiUrl}/${this.endpoint}`);
+        return this.http.get<T[]>(`${this.apiUrl}/${this.controller}`);
     }
 
     findOne(id: number): Observable<T> {
-        return this.http.get<T>(`${this.apiUrl}/${this.endpoint}/${id}`);
+        return this.http.get<T>(`${this.apiUrl}/${this.controller}/${id}`);
     }
 
     create(data: Partial<T>): Observable<T> {
-        return this.http.post<T>(`${this.apiUrl}/${this.endpoint}`, data);
+        return this.http.post<T>(`${this.apiUrl}/${this.controller}`, data);
     }
 
     update(id: number, data: Partial<T>): Observable<T> {
-        return this.http.put<T>(`${this.apiUrl}/${this.endpoint}/${id}`, data);
+        return this.http.put<T>(`${this.apiUrl}/${this.controller}/${id}`, data);
     }
 
     delete(id: number): Observable<void> {
-        return this.http.delete<void>(`${this.apiUrl}/${this.endpoint}/${id}`);
+        return this.http.delete<void>(`${this.apiUrl}/${this.controller}/${id}`);
     }
 }

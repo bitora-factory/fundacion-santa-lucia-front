@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Autorización Médica - Fundación Santa Lucía</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .content {
+            margin: 20px 0;
+        }
+        .signatures {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature-box {
+            text-align: center;
+            width: 200px;
+        }
+        .signature-line {
+            border-top: 1px solid #333;
+            margin-bottom: 5px;
+        }
+        .checkbox {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AUTORIZACIÓN PARA ATENCIÓN MÉDICA</h1>
+        <h2>FUNDACIÓN SANTA LUCÍA</h2>
+    </div>
+
+    <div class="content">
+        <p><strong>INFORMACIÓN DEL RESIDENTE:</strong></p>
+        <p><strong>Nombre completo:</strong> {{RESIDENT_NAME}}</p>
+        <p><strong>Cédula de ciudadanía:</strong> {{RESIDENT_ID}}</p>
+        <p><strong>Fecha de nacimiento:</strong> {{BIRTH_DATE}}</p>
+        <p><strong>Edad:</strong> {{AGE}} años</p>
+        <p><strong>Dirección:</strong> {{RESIDENT_ADDRESS}}</p>
+        <p><strong>Teléfono:</strong> {{RESIDENT_PHONE}}</p>
+
+        <p><strong>INFORMACIÓN DEL RESPONSABLE:</strong></p>
+        <p><strong>Nombre:</strong> {{GUARDIAN_NAME}}</p>
+        <p><strong>Cédula:</strong> {{GUARDIAN_ID}}</p>
+        <p><strong>Teléfono:</strong> {{GUARDIAN_PHONE}}</p>
+        <p><strong>Dirección:</strong> {{GUARDIAN_ADDRESS}}</p>
+
+        <p><strong>AUTORIZACIÓN:</strong></p>
+        <p>Por medio de la presente, yo <strong>{{GUARDIAN_NAME}}</strong>, identificado(a) con cédula número 
+        <strong>{{GUARDIAN_ID}}</strong>, en mi calidad de responsable legal de <strong>{{RESIDENT_NAME}}</strong>, 
+        autorizo expresamente a:</p>
+
+        <div class="checkbox">
+            <p>☐ Atención médica de urgencias</p>
+            <p>☐ Administración de medicamentos prescritos</p>
+            <p>☐ Exámenes médicos de rutina</p>
+            <p>☐ Consultas médicas especializadas</p>
+            <p>☐ Procedimientos médicos menores</p>
+            <p>☐ Traslado a centros de salud cuando sea necesario</p>
+        </div>
+
+        <p><strong>OBSERVACIONES MÉDICAS ESPECIALES:</strong></p>
+        <p>_________________________________________________________________</p>
+        <p>_________________________________________________________________</p>
+        <p>_________________________________________________________________</p>
+
+        <p><strong>CONTACTOS DE EMERGENCIA:</strong></p>
+        <p>En caso de emergencia médica, contactar a:</p>
+        <p><strong>Contacto 1:</strong> {{GUARDIAN_NAME}} - {{GUARDIAN_PHONE}}</p>
+        <p><strong>Contacto 2:</strong> ________________________ - ______________</p>
+
+        <p>Esta autorización es válida mientras el residente permanezca bajo el cuidado de la 
+        Fundación Santa Lucía, y puede ser revocada por escrito en cualquier momento.</p>
+
+        <p><strong>Fecha de autorización:</strong> {{CURRENT_DATE}}</p>
+    </div>
+
+    <div class="signatures">
+        <div class="signature-box">
+            <div class="signature-line"></div>
+            <p><strong>Firma del Responsable</strong></p>
+            <p>{{GUARDIAN_NAME}}</p>
+            <p>C.C. {{GUARDIAN_ID}}</p>
+        </div>
+        
+        <div class="signature-box">
+            <div class="signature-line"></div>
+            <p><strong>Testigo</strong></p>
+            <p>_____________________</p>
+            <p>C.C. _________________</p>
+        </div>
+    </div>
+</body>
+</html>

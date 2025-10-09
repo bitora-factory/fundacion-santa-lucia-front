@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Contrato de Residencia - Fundación Santa Lucía</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .content {
+            margin: 20px 0;
+        }
+        .signatures {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature-box {
+            text-align: center;
+            width: 200px;
+        }
+        .signature-line {
+            border-top: 1px solid #333;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>CONTRATO DE RESIDENCIA</h1>
+        <h2>FUNDACIÓN SANTA LUCÍA</h2>
+    </div>
+
+    <div class="content">
+        <p><strong>RESIDENTE:</strong></p>
+        <p>Yo, <strong>{{RESIDENT_NAME}}</strong>, identificado(a) con cédula de ciudadanía número <strong>{{RESIDENT_ID}}</strong>, 
+        nacido(a) el <strong>{{BIRTH_DATE}}</strong>, de <strong>{{AGE}}</strong> años de edad, 
+        residente en <strong>{{RESIDENT_ADDRESS}}</strong>, teléfono <strong>{{RESIDENT_PHONE}}</strong>.</p>
+
+        <p><strong>RESPONSABLE/TUTOR:</strong></p>
+        <p>El señor(a) <strong>{{GUARDIAN_NAME}}</strong>, identificado(a) con cédula número <strong>{{GUARDIAN_ID}}</strong>, 
+        teléfono <strong>{{GUARDIAN_PHONE}}</strong>, dirección <strong>{{GUARDIAN_ADDRESS}}</strong>, 
+        quien actúa como responsable del residente.</p>
+
+        <p><strong>CONDICIONES DE RESIDENCIA:</strong></p>
+        <ul>
+            <li><strong>Fecha de ingreso:</strong> {{ENTRY_DATE}}</li>
+            <li><strong>Tipo de acomodación:</strong> {{ACCOMMODATION_TYPE}}</li>
+            <li><strong>Modalidad de pago:</strong> {{PAYMENT_TYPE}}</li>
+            <li><strong>Valor mensual:</strong> ${{MONTHLY_COST}}</li>
+            <li><strong>Estado:</strong> {{STATUS}}</li>
+        </ul>
+
+        <p><strong>TÉRMINOS Y CONDICIONES:</strong></p>
+        <p>Acepto los términos y condiciones establecidos por la Fundación Santa Lucía para mi residencia, 
+        comprometiéndome a cumplir con las normas de convivencia y el reglamento interno de la institución.</p>
+
+        <p>El presente contrato entra en vigencia a partir de la fecha de ingreso mencionada y 
+        puede ser modificado mediante mutuo acuerdo entre las partes.</p>
+
+        <p><strong>Fecha del contrato:</strong> {{CURRENT_DATE}}</p>
+    </div>
+
+    <div class="signatures">
+        <div class="signature-box">
+            <div class="signature-line"></div>
+            <p><strong>Firma del Residente</strong></p>
+            <p>{{RESIDENT_NAME}}</p>
+        </div>
+        
+        <div class="signature-box">
+            <div class="signature-line"></div>
+            <p><strong>Firma del Responsable</strong></p>
+            <p>{{GUARDIAN_NAME}}</p>
+        </div>
+    </div>
+</body>
+</html>

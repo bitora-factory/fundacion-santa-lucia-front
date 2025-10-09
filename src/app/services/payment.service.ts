@@ -7,14 +7,14 @@ import { BaseCrudService } from "./base-crud.service";
 @Injectable({ providedIn: 'root' })
 export class PaymentService extends BaseCrudService<any
 > {
-    protected endpoint = 'payment';
+    protected controller = 'payment';
 
     constructor(http: HttpClient) {
         super(http);
     }
 
     getConsecutive(): Observable<number> {
-        return this.http.get<number>(`${this.apiUrl}/${this.endpoint}/consecutive-number`);
+        return this.http.get<number>(`${this.apiUrl}/${this.controller}/consecutive-number`);
     }
 
     /* Additional methods specific to residents can be added here */

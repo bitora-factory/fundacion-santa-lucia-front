@@ -13,37 +13,37 @@ export class AlertService {
   ) { }
 
   success(message: string) {
-    this.messageService.add({ 
-      severity: 'success', 
-      summary: 'Éxito', 
-      detail: message, 
-      life: AlertService.DEFAULT_TIMEOUT 
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Éxito',
+      detail: message,
+      life: AlertService.DEFAULT_TIMEOUT
     });
   }
 
   error(message: string) {
-    this.messageService.add({ 
-      severity: 'error', 
-      summary: 'Error', 
-      detail: message, 
-      life: AlertService.DEFAULT_TIMEOUT 
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: message,
+      life: AlertService.DEFAULT_TIMEOUT
     });
   }
 
   info(message: string) {
-    this.messageService.add({ 
-      severity: 'info', 
-      summary: 'Información', 
-      detail: message, 
-      life: AlertService.DEFAULT_TIMEOUT 
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Información',
+      detail: message,
+      life: AlertService.DEFAULT_TIMEOUT
     });
   }
   warn(message: string) {
-    this.messageService.add({ 
-      severity: 'warn', 
-      summary: 'Advertencia', 
-      detail: message, 
-      life: AlertService.DEFAULT_TIMEOUT 
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Advertencia',
+      detail: message,
+      life: AlertService.DEFAULT_TIMEOUT
     });
   }
 

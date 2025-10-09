@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrato de Residencia</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .content { margin: 20px 0; }
+        .signature { margin-top: 60px; text-align: center; }
+        .signature-line { border-bottom: 1px solid #000; width: 200px; margin: 20px auto; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{FUNDACION}}</h1>
+        <h2>CONTRATO DE RESIDENCIA</h2>
+    </div>
+    
+    <div class="content">
+        <p><strong>FECHA:</strong> {{FECHA_ACTUAL}}</p>
+        
+        <h3>DATOS DEL RESIDENTE</h3>
+        <p><strong>Nombre:</strong> {{NOMBRE}}</p>
+        <p><strong>Cédula:</strong> {{CEDULA}}</p>
+        <p><strong>Dirección:</strong> {{DIRECCION}}</p>
+        <p><strong>Teléfono:</strong> {{TELEFONO}}</p>
+        
+        <h3>DATOS DEL RESPONSABLE</h3>
+        <p><strong>Responsable:</strong> {{RESPONSABLE}}</p>
+        <p><strong>Cédula del Responsable:</strong> {{CEDULA_RESPONSABLE}}</p>
+        
+        <h3>CONDICIONES DEL SERVICIO</h3>
+        <p><strong>Tipo de Acomodación:</strong> {{ACOMODACION}}</p>
+        <p><strong>Valor Mensual:</strong> ${{VALOR}}</p>
+        <p><strong>Fecha de Ingreso:</strong> {{FECHA_INGRESO}}</p>
+        <p><strong>Tipo de Pago:</strong> {{TIPO_PAGO}}</p>
+        
+        <h3>TÉRMINOS Y CONDICIONES</h3>
+        <p>El presente contrato establece las condiciones bajo las cuales {{NOMBRE}} será residente de {{FUNDACION}}.</p>
+        <p>El valor mensual acordado es de ${{VALOR}} pesos colombianos, el cual debe ser cancelado de forma {{TIPO_PAGO}}.</p>
+        <p>La fecha de ingreso acordada es {{FECHA_INGRESO}}.</p>
+    </div>
+    
+    <div class="signature">
+        <div>
+            <div class="signature-line"></div>
+            <p>Firma del Responsable<br>{{RESPONSABLE}}<br>C.C. {{CEDULA_RESPONSABLE}}</p>
+        </div>
+        
+        <div style="margin-top: 40px;">
+            <div class="signature-line"></div>
+            <p>{{FUNDACION}}<br>NIT: {{NIT}}</p>
+        </div>
+    </div>
+</body>
+</html>

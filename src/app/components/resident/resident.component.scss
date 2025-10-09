@@ -2,7 +2,7 @@
   display: block;
   text-align: center;
   width: 6.5rem;
-  text-transform: lowercase;
+  // text-transform: lowercase;
   padding: 3px;
   color: white;
   border-radius: 0.5rem;
@@ -20,4 +20,53 @@
   &.deceased {
     background-color: var(--p-gray-400);
   }
+}
+
+/* Estilos para la selección de grupos de residentes */
+.resident-group-selected {
+  background-color: rgba(var(--p-primary-500), 0.08) !important;
+  
+  td {
+    background-color: rgba(var(--p-primary-500), 0.08) !important;
+  }
+  
+  &:hover {
+    background-color: rgba(var(--p-primary-500), 0.12) !important;
+    
+    td {
+      background-color: rgba(var(--p-primary-500), 0.12) !important;
+    }
+  }
+}
+
+/* Mejorar el estilo de las filas seleccionadas */
+:host ::ng-deep .p-datatable-tbody > tr.p-datatable-row-selected {
+  background-color: rgba(var(--p-primary-500), 0.16) !important;
+  
+  td {
+    background-color: rgba(var(--p-primary-500), 0.16) !important;
+  }
+  
+  &:hover {
+    background-color: rgba(var(--p-primary-500), 0.20) !important;
+    
+    td {
+      background-color: rgba(var(--p-primary-500), 0.20) !important;
+    }
+  }
+}
+
+/* Cursor pointer para indicar que las filas son clickeables */
+:host ::ng-deep .p-datatable-tbody > tr.p-datatable-selectable-row {
+  cursor: pointer;
+}
+
+/* Bordes sutiles para separar grupos visualmente */
+:host ::ng-deep .p-datatable-tbody > tr:first-of-type {
+  border-top: 2px solid var(--p-surface-200);
+}
+
+/* Estilo especial para la primera fila de cada grupo */
+.resident-group-first-row {
+  border-top: 2px solid var(--p-primary-200) !important;
 }

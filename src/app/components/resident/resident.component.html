@@ -1,54 +1,91 @@
+
 <app-create-resident
     [selected]="selectedResident"
     (created)="loadResidents()"
 ></app-create-resident>
 <p-table 
     scrollHeight="600px"
-    selectionMode="multiple"
+    selectionMode="single"
+    [(selection)]="selectedResidents"
+    dataKey="residentId"
     [value]="residents" 
     [tableStyle]="{ 'min-width': 'max-content' }" 
-    [scrollable]="true" 
+    [scrollable]="true"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 15, 20, 25]"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+    [globalFilterFields]="['resident_id', 'name', 'dni', 'guardian', 'guardianDni', 'address', 'phone', 'entryDate', 'paymentFormatted']"
+    (onFilter)="onTableFilter($event)"
 >
     <ng-template pTemplate="header">
         <tr>
-            <th *ngFor="let col of getRegularColumns()" [ngClass]="col.class">{{col.header}}</th>
-            <th *ngFor="let col of getFrozenColumns()" [ngClass]="col.class" pFrozenColumn [frozen]="true" alignFrozen="right">{{col.header}}</th>
+            <th *ngFor="let col of columns" [ngClass]="col.class" pFrozenColumn [frozen]="col.frozen!" [alignFrozen]="col.alignFrozen!">{{col.header}}</th>
+            <!-- <th *ngFor="let col of getFrozenColumns()" [ngClass]="col.class" pFrozenColumn [frozen]="true" alignFrozen="right">{{col.header}}</th> -->
+        </tr>
+        <tr>
+            <th *ngFor="let col of columns">
+                <p-columnFilter 
+                    [type]="col.filterType!" 
+                    [field]="col.field!" 
+                    [matchMode]="col.matchMode!"
+                    [placeholder]="col.placeholder!"
+                    [showMenu]="!col.template"
+                ></p-columnFilter>
+                @if (col.template) {
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-select 
+                            [ngModel]="value" 
+                            [options]="statusOptions" 
+                            (ngModelChange)="filter($event)"
+                            placeholder="Seleccionar"
+                            [showClear]="true"
+                            appendTo="body"
+                            >
+                        </p-select>
+                    </ng-template>
+                }
+            </th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-resident let-rowIndex="rowIndex">
-        <tr [pSelectableRow]="resident" [pSelectableRowIndex]="rowIndex">
-            <td *ngFor="let col of getRegularColumns()" [ngClass]="col.class">
-                @switch (col.field) {
-                    @case ('id') { {{ resident.id }} }
-                    @case ('name') { {{ resident.name }} }
-                    @case ('dni') { {{ resident.dni | number: '1.0-0'}} }
-                    @case ('accomodation') { {{ enumService.getEnumName('accomodation', resident.accomodation) }} }
-                    @case ('guardian') { {{ resident.guardian }} }
-                    @case ('guardianDni') { {{ resident.guardianDni | number: '1.0-0'}} }
-                    @case ('address') { {{ resident.address }} }
-                    @case ('value') { $ {{ resident.value | number: '1.0-2'}} }
-                    @case ('entryDate') { {{ resident.entryDate | date: 'dd/MM/yyyy'}} }
-                    @case ('phone') { {{ resident.phone }} }
-                    @case ('months') { {{ resident.months }} }
-                    @case ('payment') { {{ enumService.getEnumName('payment', resident.payment) }} }
-                    @case ('status') { 
-                        <span [ngClass]="enumService.getEnumClass('status', resident.status)">
-                                {{ enumService.getEnumName('status', resident.status) }}
-                        </span> 
-                    }
-                }
+        <!-- (click)="onRowClick(resident, $event)" -->
+        <!-- [ngClass]="getRowClass(resident)" -->
+        <tr [pSelectableRow]="resident">
+            <td>{{ resident.residentId }}</td>
+            <td>{{ resident.name }}</td>
+            <td>{{ resident.dni }}</td>
+            <td>{{ enumService.getEnumName('accomodation', resident.accomodation) }}</td>
+            <td>{{ resident.guardian }}</td>
+            <td>{{ resident.guardianDni }}</td>
+            <td>{{ resident.address }}</td>
+            <td>{{ resident.phone }}</td>
+            <td>{{ resident.value }}</td>
+            <td>{{ enumService.getPaymentMethodNames(resident.paymentMethod) }}</td>
+            <td>{{ resident.entryDate | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ resident.months }}</td>
+            <td>
+                <span [ngClass]="enumService.getEnumClass('status', resident.status)">
+                    {{ enumService.getEnumName('status', resident.status) }}
+                </span> 
             </td>
-            <td *ngFor="let col of getFrozenColumns()" [ngClass]="col.class" pFrozenColumn [frozen]="true" alignFrozen="right">
-                @switch (col.field) {
-                    @case ('actions') {
-                        <p-button
-                            icon="pi pi-pencil"
-                            pTooltip="Editar residente"
-                            tooltipPosition="left"
-                            (click)="editResident(resident)"
-                        ></p-button>
-                    }
-                }
+            <td pFrozenColumn alignFrozen="right">
+                <p-button
+                    icon="pi pi-pencil"
+                    pTooltip="Editar residente"
+                    tooltipPosition="left"
+                    size="small"
+                    (click)="editResident(resident)"
+                ></p-button>
+                <!-- <p-button
+                    icon="pi pi-file-pdf"
+                    pTooltip="Generar documentos"
+                    tooltipPosition="left"
+                    severity="success"
+                    size="small"
+                    (click)="generateDocuments(resident)"
+                ></p-button> -->
             </td>
         </tr>
     </ng-template>

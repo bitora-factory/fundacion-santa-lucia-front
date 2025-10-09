@@ -6,11 +6,18 @@ import { BaseCrudService } from "./base-crud.service";
 
 @Injectable({ providedIn: 'root' })
 export class ResidentService extends BaseCrudService<ResidentModel> {
-    protected endpoint = 'resident';
+    protected controller = 'resident';
 
     constructor(http: HttpClient) {
         super(http);
     }
 
     /* Additional methods specific to residents can be added here */
+    createResidentRelation(data: ResidentModel): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/${this.controller}/relation`, data);
+    }
+
+    deleteResidentRelation(data: ResidentModel): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/${this.controller}/delete-relation`, data);
+    }
 }

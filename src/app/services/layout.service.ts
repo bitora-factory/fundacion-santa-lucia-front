@@ -26,6 +26,8 @@ interface MenuChangeEvent {
     providedIn: 'root'
 })
 export class LayoutService {
+    private readonly STORAGE_KEY = 'santa-lucia-theme-config';
+
     _config: layoutConfig = {
         preset: 'Aura',
         primary: 'sky',
@@ -79,10 +81,15 @@ export class LayoutService {
     private initialized = false;
 
     constructor() {
+        // Cargar configuración desde localStorage
+        this.loadConfigFromStorage();
+
         effect(() => {
             const config = this.layoutConfig();
             if (config) {
                 this.onConfigUpdate();
+                // Guardar en localStorage cada vez que cambie la configuración
+                this.saveConfigToStorage();
             }
         });
 
@@ -96,6 +103,33 @@ export class LayoutService {
 
             this.handleDarkModeTransition(config);
         });
+    }
+
+    /**
+     * Carga la configuración desde localStorage
+     */
+    private loadConfigFromStorage(): void {
+        try {
+            const stored = localStorage.getItem(this.STORAGE_KEY);
+            if (stored) {
+                const storedConfig = JSON.parse(stored) as layoutConfig;
+                this._config = { ...this._config, ...storedConfig };
+                this.layoutConfig.set(this._config);
+            }
+        } catch (error) {
+            console.warn('Error loading theme config from localStorage:', error);
+        }
+    }
+
+    /**
+     * Guarda la configuración actual en localStorage
+     */
+    private saveConfigToStorage(): void {
+        try {
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.layoutConfig()));
+        } catch (error) {
+            console.warn('Error saving theme config to localStorage:', error);
+        }
     }
 
     private handleDarkModeTransition(config: layoutConfig): void {

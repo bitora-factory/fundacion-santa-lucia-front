@@ -115,6 +115,32 @@ export class AppConfigurator {
     ngOnInit() {
         if (isPlatformBrowser(this.platformId)) {
             this.onPresetChange(this.layoutService.layoutConfig().preset);
+            
+            // Aplicar configuración inicial guardada
+            this.applyStoredConfiguration();
+        }
+    }
+
+    /**
+     * Aplica la configuración guardada en localStorage al inicializar
+     */
+    private applyStoredConfiguration() {
+        const config = this.layoutService.layoutConfig();
+        
+        // Aplicar color primario si está guardado
+        if (config.primary) {
+            const primaryColor = this.primaryColors().find(c => c.name === config.primary);
+            if (primaryColor) {
+                this.applyTheme('primary', primaryColor);
+            }
+        }
+        
+        // Aplicar color de superficie si está guardado
+        if (config.surface) {
+            const surfaceColor = this.surfaces.find(s => s.name === config.surface);
+            if (surfaceColor) {
+                this.applyTheme('surface', surfaceColor);
+            }
         }
     }
 

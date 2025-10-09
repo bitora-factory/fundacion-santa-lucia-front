@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, inject, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, inject, Inject, OnInit, Output, ViewChild } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { TableModule } from 'primeng/table';
@@ -17,9 +17,10 @@ import { SelectModule } from 'primeng/select';
 import { AbstractComponent } from '../../../abstract-component';
 import { PaymentService } from '../../../services/payment.service';
 import { EnumService } from '../../../services/enum.service';
+import { ReceiptService } from '../../../services/receipt.service';
 
 @Component({
-  selector: 'app-create',
+  selector: 'app-create-receipt',
   imports: [
     CommonModule,
     ButtonModule,
@@ -35,23 +36,25 @@ import { EnumService } from '../../../services/enum.service';
   styleUrls: ['./create-receipt.component.scss']
 })
 export class CreateReceiptComponent extends AbstractComponent implements OnInit {
-
+  @Output() created = new EventEmitter<void>();
   @ViewChild('receiptContainer') receiptContainer!: ElementRef;
 
   visible: boolean = false;
   paymentDetails: PaymentDetailModel[] = [
     {
       id: null,
+      paymentId: null,
       code: 'Mensualidad',
-      article: '',
+      detail: '',
       units: null,
       unitPrice: null,
       total: null
     },
     {
       id: null,
+      paymentId: null,
       code: 'Otros cargos',
-      article: '',
+      detail: '',
       units: null,
       unitPrice: null,
       total: null
@@ -66,6 +69,7 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
   private alertService = inject(AlertService);
   private loadingService = inject(LoadingService);
   private paymentService = inject(PaymentService);
+  private receiptService = inject(ReceiptService);
   private enumService = inject(EnumService);
 
   constructor() {
@@ -146,8 +150,8 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
 
         this.alertService.success(`Residente encontrado`);
         console.log('Residente encontrado:', resident);
-        const entryDate = new Date(resident.entryDate);
-        const sinceDate = this.addMonths(entryDate, resident.months);
+        const entryDate = new Date(resident.entryDate as Date);
+        const sinceDate = this.addMonths(entryDate, resident.months as number);
         const untilDate = this.addMonths(sinceDate, 1);
         const accomodation = this.enumService.getEnumName('accomodation', resident.accomodation);
 
@@ -156,22 +160,24 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
             id: null,
             receiptNumber: this.consecutiveNumber as number,
             date: new Date(),
-            totalAmount: resident.value,
+            totalAmount: resident.value as number,
             resident: resident
           },
           paymentDetails: [
             {
               id: -1,
+              paymentId: null,
               code: 'Mensualidad',
-              article: `Acomodación ${accomodation} del ${this.formatDate(sinceDate)} hasta el ${this.formatDate(untilDate)}`,
+              detail: `Acomodación ${accomodation} del \n${this.formatDate(sinceDate)} al ${this.formatDate(untilDate)}`,
               units: 1,
               unitPrice: resident.value,
               total: resident.value
             },
             {
               id: -2,
+              paymentId: null,
               code: 'Otros cargos',
-              article: '',
+              detail: '',
               units: null,
               unitPrice: null,
               total: null
@@ -262,6 +268,7 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
         // Mostrar mensaje de éxito
         this.alertService.success('PDF descargado exitosamente');
         this.visible = false; // Cerrar el diálogo después de descargar el PDF
+        this.created.emit(); // Notificar que se creó un recibo
       }
     } catch (error) {
       console.error('Error al generar PDF:', error);
@@ -294,10 +301,10 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
   }
 
   savePayment() {
-    this.paymentService.create(this.receiptData?.payment as any)
+    this.receiptService.save(this.receiptData as any)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (payment) => {
+        next: (receipt) => {
           this.alertService.success('Pago guardado exitosamente');
           this.downloadReceipt(); // Descargar el recibo después de guardar el pago
           // this.savePaymentDetails(payment.id);

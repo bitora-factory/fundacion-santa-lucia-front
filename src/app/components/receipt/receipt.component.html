@@ -1,3 +1,136 @@
-<app-create />
+<app-create-receipt (created)="loadPayments()" />
 
-{{payments | json}}
+<p-table 
+    #dt2
+    scrollHeight="600px" 
+    selectionMode="multiple" 
+    [value]="payments" 
+    [tableStyle]="{ 'min-width': 'max-content' }"
+    [scrollable]="true"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 15, 20, 25]"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+    dataKey="id"
+    [globalFilterFields]="['resident.name', 'date']"
+    >
+    <!-- [globalFilterFields]="['resident.name', 'date']" -->
+    <!-- <ng-template #caption>
+        <div class="flex">
+            <p-iconfield iconPosition="left" class="ml-auto">
+                <p-inputicon>
+                    <i class="pi pi-search"></i>
+                </p-inputicon>
+                <input pInputText type="text" (input)="onInput($event)" placeholder="Search keyword" />
+            </p-iconfield>
+        </div>
+    </ng-template> -->
+    <ng-template pTemplate="header">
+        <tr>
+            <th *ngFor="let col of getRegularColumns()" [ngClass]="col.class">
+                {{col.header}}
+                <!-- <p-columnFilter 
+                    type="text" 
+                    field="resident.name" 
+                    matchMode="contains"
+                    placeholder="Buscar residente" 
+                    ariaLabel="Filtrar nombre"
+                ></p-columnFilter> -->
+            </th>
+            <th *ngFor="let col of getFrozenColumns()" [ngClass]="col.class" pFrozenColumn [frozen]="true"
+                alignFrozen="right">{{col.header}}</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th class="!text-center">
+                <p-columnFilter 
+                    type="text" 
+                    field="resident.name" 
+                    matchMode="contains"
+                    placeholder="Buscar residente" 
+                    ariaLabel="Filtrar nombre"
+                ></p-columnFilter>
+            </th>
+            <th></th>
+            <th>
+                Filtrar fecha
+                <p-columnFilter 
+                    type="date" 
+                    field="date" 
+                    display="menu"
+                    placeholder="Seleccionar fecha"
+                    dateFormat="dd/mm/yy"
+                ></p-columnFilter>
+            </th>
+            <th></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-payment let-rowIndex="rowIndex">
+        <tr [pSelectableRow]="payment" [pSelectableRowIndex]="rowIndex">
+            <td *ngFor="let col of getRegularColumns()" [ngClass]="col.class">
+                @switch (col.field) {
+                @case ('receiptNumber') { {{ payment.receiptNumber }} }
+                @case ('resident') { {{ payment.resident.name }} }
+                @case ('totalAmount') { $ {{ payment.totalAmount | number: '1.0-0'}} }
+                @case ('date') { {{ payment.date | date: 'dd/MM/yyyy':'':'es-CO' }} }
+                }
+            </td>
+            <td *ngFor="let col of getFrozenColumns()" [ngClass]="col.class" pFrozenColumn [frozen]="true"
+                alignFrozen="right">
+                @switch (col.field) {
+                @case ('actions') {
+                <p-button icon="pi pi-eye" pTooltip="Ver detalle" tooltipPosition="left"
+                    (click)="getDetails(payment)"></p-button>
+                }
+                }
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [header]="`Detalle`" [modal]="true" [(visible)]="visibleDialogDetail" [style]="{ width: '70rem' }">
+    <span class="p-text-secondary block mb-8">Recibo número: {{paymentSelected?.receiptNumber}}</span>
+
+    <p-table 
+        [value]="paymentDetails" 
+        dataKey="id"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        [paginator]="true"
+        [rows]="5"
+        [rowsPerPageOptions]="[5, 10, 15]"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} detalles"
+    >
+        <ng-template #header>
+            <tr>
+                <th class="cell cell-blue" style="width: 14%;">Código</th>
+                <th class="cell cell-blue" style="width: 50%;">Artículo</th>
+                <th class="cell cell-blue" style="width: 12%;">Unidades</th>
+                <th class="cell cell-blue" style="width: 12%;">Precio Un.</th>
+                <th class="cell cell-blue" style="width: 12%;">Total</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-paymentDetail let-editing="editing" >
+            <tr>
+                <td class="cell">
+                    {{ paymentDetail.code }}
+                </td>
+                <td class="cell">
+                    {{ paymentDetail.detail }}
+                </td>
+                <td class="cell !text-center">
+                    {{ paymentDetail.units }}
+                </td>
+                <td class="cell !text-end">
+                    {{ paymentDetail.unitPrice ? '$' : ''}}
+                    {{ paymentDetail.unitPrice | number: '1.0-0' }}
+                </td>
+                <td class="cell !text-end">
+                    {{ paymentDetail.total ? '$' : ''}}
+                    {{ paymentDetail.total | number: '1.0-0' }}
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
