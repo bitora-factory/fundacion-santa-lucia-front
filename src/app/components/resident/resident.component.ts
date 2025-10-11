@@ -43,6 +43,7 @@ export class ResidentComponent extends AbstractComponent implements OnInit {
   selectedResident: ResidentModel | null = null;
   selectedResidents: ResidentModel[] = [];
   currentFilteredData: ResidentModel[] = [];
+  visible: boolean = false;
 
   // Opciones para filtros dropdown - usando enum service
   accommodationOptions: { label: string; value: number; }[] = [];
@@ -173,6 +174,7 @@ export class ResidentComponent extends AbstractComponent implements OnInit {
 
   editResident(item: ResidentModel) {
     this.selectedResident = Object.assign({}, item);
+    this.visible = true;
     console.log('Editing resident:', this.selectedResident);
 
     // Aquí podrías abrir un modal o realizar alguna acción para editar el residente
@@ -223,6 +225,4 @@ export class ResidentComponent extends AbstractComponent implements OnInit {
       }
     });
   }
-
-
 }

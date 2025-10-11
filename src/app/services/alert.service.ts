@@ -6,7 +6,7 @@ import { MessageService } from 'primeng/api';
 })
 export class AlertService {
 
-  private static readonly DEFAULT_TIMEOUT = 5000; // Default timeout for alerts in milliseconds
+  // private readonly DEFAULT_TIMEOUT = 5000;
 
   constructor(
     private messageService: MessageService
@@ -17,7 +17,7 @@ export class AlertService {
       severity: 'success',
       summary: 'Éxito',
       detail: message,
-      life: AlertService.DEFAULT_TIMEOUT
+      life: 3000
     });
   }
 
@@ -26,7 +26,8 @@ export class AlertService {
       severity: 'error',
       summary: 'Error',
       detail: message,
-      life: AlertService.DEFAULT_TIMEOUT
+      life: 9000
+      // sticky: true 
     });
   }
 
@@ -35,15 +36,18 @@ export class AlertService {
       severity: 'info',
       summary: 'Información',
       detail: message,
-      life: AlertService.DEFAULT_TIMEOUT
+      life: 9000
+      // sticky: true 
     });
   }
+
   warn(message: string) {
     this.messageService.add({
       severity: 'warn',
       summary: 'Advertencia',
       detail: message,
-      life: AlertService.DEFAULT_TIMEOUT
+      life: 9000
+      // sticky: true 
     });
   }
 

@@ -99,10 +99,24 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
       .pipe(takeUntil(this.destroy$))
       .subscribe(residents => {
         this.residents = residents.map(resident => {
-          return {
-            ...resident,
-            idName: `${resident.id} - ${resident.name}`,
-          };
+          if (resident.residentId === null) {
+            return {
+              ...resident,
+              idName: `${resident.residentId} - ${resident.name}`,
+            };
+          } else {
+            const relationship = residents.find(r => r.residentId === resident.residentId && r.id !== resident.id);
+            return {
+              ...resident,
+              idName: `${resident.residentId} - ${resident.name} ${relationship ? '(Relación: ' + relationship.name + ')' : ''}`,
+            };
+          }
+        });
+        const set = new Set();
+        this.residents = this.residents.filter(resident => {
+          const duplicate = set.has(resident.residentId);
+          set.add(resident.residentId);
+          return !duplicate;
         });
       });
   }
@@ -161,7 +175,7 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
             receiptNumber: this.consecutiveNumber as number,
             date: new Date(),
             totalAmount: resident.value as number,
-            resident: resident
+            resident: this.residents.find(r => r.id === this.residentId) as ResidentModel,
           },
           paymentDetails: [
             {
@@ -301,6 +315,8 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
   }
 
   savePayment() {
+    console.log(this.receiptData);
+    // return
     this.receiptService.save(this.receiptData as any)
       .pipe(takeUntil(this.destroy$))
       .subscribe({

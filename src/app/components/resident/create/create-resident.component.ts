@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, Form } from '@angular/forms';
+import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { SelectModule } from 'primeng/select';
+import { SelectChangeEvent, SelectModule } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DatePickerModule } from 'primeng/datepicker';
 import { AlertService } from '../../../services/alert.service';
@@ -15,12 +15,12 @@ import { ResidentService } from '../../../services/resident.service';
 import { EnumService } from '../../../services/enum.service';
 import { EnumInterface } from '../../../models/interfaces/enum.interface';
 import { ResidentModel } from '../../../models/resident.model';
-import { Subject, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
 import { AbstractComponent } from '../../../abstract-component';
 import { FormCreateResident, RESIDENT_FORM_CONTROL_NAMES, ResidentKey } from '../../../models/interfaces/form.interface';
-import { Logger } from 'html2canvas/dist/types/core/logger';
 import { ConfirmService } from '../../../services/confirm.service';
-
+import { FieldsetModule } from 'primeng/fieldset';
+import { CardModule } from 'primeng/card';
 @Component({
   selector: 'app-create-resident',
   standalone: true,
@@ -35,7 +35,9 @@ import { ConfirmService } from '../../../services/confirm.service';
     SelectModule,
     MultiSelectModule,
     ReactiveFormsModule,
-    DatePickerModule
+    DatePickerModule,
+    FieldsetModule,
+    CardModule
   ],
   templateUrl: './create-resident.component.html',
   styleUrls: ['./create-resident.component.scss']
@@ -43,6 +45,7 @@ import { ConfirmService } from '../../../services/confirm.service';
 export class CreateResidentComponent extends AbstractComponent implements OnInit, OnChanges {
   @Output() created = new EventEmitter<void>();
   @Input() selected: ResidentModel | null = null;
+  @Input() residents: ResidentModel[] = [];
 
   public visible: boolean = false;
   public name: string = '';
@@ -52,8 +55,10 @@ export class CreateResidentComponent extends AbstractComponent implements OnInit
   public statusOptions: EnumInterface[] = [];
   public baseResidentOptions: any[] = [];
   public isRelation: boolean = false;
-  public formSubmitted: boolean = false; // Para controlar cuándo mostrar errores
+  public formSubmitted: boolean = false;
   formControlName = RESIDENT_FORM_CONTROL_NAMES;
+  lastStatus: number | null = null;
+  disabledRadioBtn: boolean = false;
 
   private fb = inject(FormBuilder);
   private alertService = inject(AlertService);
@@ -69,20 +74,17 @@ export class CreateResidentComponent extends AbstractComponent implements OnInit
   ngOnInit(): void {
     this.initForm();
     this.setAllEnumOptions();
-    // this.loadBaseResidentOptions();
   }
 
-  /**
-   * Validador personalizado para arrays no vacíos
-   */
+
   private requiredArray(control: AbstractControl): ValidationErrors | null {
     return control.value && Array.isArray(control.value) && control.value.length > 0 ? null : { required: true };
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selected'] && this.selected) {
-      // Resetear estado de relación cuando se edita
-      // this.loadBaseResidentOptions();
+
+      this.lastStatus = this.selected.status;
       this.isRelation = this.selected.relationship ? true : false;
       this.enableAllFields();
 
@@ -93,14 +95,22 @@ export class CreateResidentComponent extends AbstractComponent implements OnInit
         baseResident: this.selected.relationship
       };
       this.formResident.patchValue(formData);
-      this.formResident.get('status')?.enable(); // Habilitar status para edición
-      console.log('formData', formData);
 
+      if (this.selected.status === 2 || this.selected.status === 3) {
+        this.formResident.disable();
+        this.disabledRadioBtn = true;
+        if (this.selected.status === 2) this.formResident.get('status')?.enable();
+      } else {
+        this.formResident.enable();
+        this.disabledRadioBtn = false;
+      }
+      this.resident2RequiredValidator();
+
+      console.log('formData', formData);
       this.visible = true;
     }
   }
 
-  /* todo: implementar validaciones */
   private initForm() {
     const { required } = Validators;
     const currentDate = new Date();
@@ -120,35 +130,50 @@ export class CreateResidentComponent extends AbstractComponent implements OnInit
       phone: this.fb.control<string | null>(null, [required]),
       months: this.fb.control<number | null>({ value: 0, disabled: true }, [required, Validators.min(0)]),
       paymentMethod: this.fb.control<string | null>(null, [this.requiredArray]),
-      status: this.fb.control<number | null>(1, [required]),
+      status: this.fb.control<number | null>({ value: 1, disabled: true }, [required]),
       residentId: this.fb.control<number | null>(null),
       relationship: this.fb.control<number | null>(null),
     });
+
+  }
+
+  private resident2RequiredValidator() {
+    if (this.isRelation) {
+      this.formResident.get('name2')?.setValidators([Validators.required]);
+      this.formResident.get('dni2')?.setValidators([Validators.required]);
+      this.formResident.get('name2')?.disable();
+      this.formResident.get('dni2')?.disable();
+    } else {
+      this.formResident.get('name2')?.clearValidators();
+      this.formResident.get('dni2')?.clearValidators();
+      this.formResident.patchValue({ name2: null, dni2: null });
+    }
   }
 
   showDialog() {
-    // Limpiar selected cuando se abre para crear nuevo residente
     this.selected = null;
     this.visible = true;
   }
 
   onResidentFormHide() {
+    console.log('onResidentHide');
+
     this.formResident.reset();
     this.formSubmitted = false; // Resetear el estado de envío
     this.selected = null; // Limpiar la referencia al residente seleccionado
     this.isRelation = false; // Resetear el tipo de registro
     this.enableAllFields(); // Habilitar todos los campos
-    // Resetear payment como array vacío
-    // this.formResident.patchValue({ payment: [] });
+    this.disabledRadioBtn = false;
+    this.lastStatus = null;
+    this.visible = false;
+
   }
 
-  // Método para verificar si un campo es inválido y debe mostrarse en rojo
   isFieldInvalid(fieldName: ResidentKey): boolean {
     const field = this.formResident.get(fieldName);
     return !!(field && field.invalid && (field.dirty || field.touched || this.formSubmitted));
   }
 
-  // Método para obtener el mensaje de error de un campo
   getFieldError(fieldName: ResidentKey): string {
     const field = this.formResident.get(fieldName);
     if (field && field.errors && this.isFieldInvalid(fieldName)) {
@@ -162,7 +187,6 @@ export class CreateResidentComponent extends AbstractComponent implements OnInit
     return '';
   }
 
-  // Método para obtener la etiqueta del campo
   private getFieldLabel(fieldName: ResidentKey): string {
     const labels: Record<ResidentKey, string> = {
       name: 'Nombres y apellidos',
@@ -186,7 +210,6 @@ export class CreateResidentComponent extends AbstractComponent implements OnInit
     return labels[fieldName] || fieldName;
   }
 
-  // Método para marcar todos los campos como touched
   private markFormGroupTouched(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(field => {
       const control = formGroup.get(field);
@@ -202,10 +225,6 @@ export class CreateResidentComponent extends AbstractComponent implements OnInit
       this.alertService.error('Formulario inválido, por favor corrige los errores.');
       this.markFormGroupTouched(this.formResident);
       return;
-    }
-
-    if (!this.isRelation && this.formResident.get('relationship')?.value) {
-      message = 'La relación se ha deshabilitado. ¿Deseas continuar?';
     }
 
     this.confirmService.showSave(
@@ -273,42 +292,69 @@ export class CreateResidentComponent extends AbstractComponent implements OnInit
     this.statusOptions = this.enumService.getEnum('status');
   }
 
-  /**
-   * Carga las opciones de residentes base para relaciones
-   */
-  // private loadBaseResidentOptions() {
-  //   this.residentService.findAll()
-  //     .pipe(takeUntil(this.destroy$))
-  //     .subscribe(residents => {
-  //       console.log('Selected resident_id for filtering:', this.selected);
-
-  //       this.baseResidentOptions = residents.filter(
-  //         r => (r.relation === null || r.id === Number(this.selected?.relation)) && r.id !== this.selected?.id
-  //       ).map(resident => ({
-  //         label: `${resident.resident_id} - ${resident.name} (${resident.guardian})`,
-  //         value: resident.resident_id,
-  //         resident: resident
-  //       }));
-  //     });
-  // }
-
-  /**
-   * Maneja el cambio de tipo de registro (nuevo vs relación)
-   */
   onRegistrationTypeChange(isRelation: boolean) {
     this.isRelation = isRelation;
+    const isDeleteRelation = !this.isRelation && !!this.selected && !!this.selected.relationship;
 
-    if (!isRelation && this.selected && this.selected.relationship) {
-      this.formResident.disable();
-      return;
-    }
-
-    this.enableAllFields();
+    this.checkFormState();
+    this.resident2RequiredValidator();
   }
 
-  /**
-   * Maneja la selección del residente base
-   */
+  onStatusChange(event: SelectChangeEvent) {
+    const isRelationAndActiveToOther = !!this.selected?.relationship && this.lastStatus === 1 && event.value !== 1;
+
+    if (isRelationAndActiveToOther) { this.isRelation = false; }
+
+    this.checkFormState();
+  }
+
+  private checkFormState() {
+    const controlStatus = this.formResident.get(this.formControlName.status);
+    const isDeleteRelation = !this.isRelation && !!this.selected && !!this.selected.relationship;
+    const isRelationAndChangeStatus = !!this.selected?.relationship && this.lastStatus === 1 &&
+      controlStatus?.value !== 1;
+    const isNotRelationAndChangeToInactive = !this.isRelation && !this.selected?.relationship &&
+      this.lastStatus === 1 && controlStatus?.value === 2;
+    const isNotRelationAndChangeToDied = !this.isRelation && !this.selected?.relationship &&
+      this.lastStatus === 1 && controlStatus?.value === 3;
+
+    const formStatus = [
+      {
+        description: 'Eliminar relación',
+        condition: isDeleteRelation || isRelationAndChangeStatus,
+        action: () => {
+          this.formResident.disable();
+          this.alertService.warn(`Al guardar, se eliminará la relación con el residente ${this.selected?.name2 || ''}.`);
+        }
+      },
+      {
+        description: 'Cambiar estado a inactivo o fallecido',
+        condition: isNotRelationAndChangeToInactive || isNotRelationAndChangeToDied,
+        action: () => {
+          const message = isNotRelationAndChangeToInactive
+            ? 'Al guardar, se marcará el residente como inactivo. Luego podrá cambiar su estado nuevamente.'
+            : 'Al guardar, se marcará el residente como fallecido. No podrá cambiar su estado nuevamente.';
+          this.formResident.disable();
+          this.disabledRadioBtn = true;
+          controlStatus?.enable();
+          this.alertService.warn(message);
+        }
+      },
+    ];
+
+    console.log('formStatus', formStatus);
+
+
+    for (const status of formStatus) {
+      if (status.condition) {
+        status.action();
+        return;
+      }
+    }
+    this.enableAllFields();
+    this.disabledRadioBtn = false;
+  }
+
   onBaseResidentChange(event: any) {
     if (!event.value) return;
 
@@ -318,7 +364,6 @@ export class CreateResidentComponent extends AbstractComponent implements OnInit
     if (selectedOption) {
       const baseResident = selectedOption.resident;
 
-      // Llenar todos los campos excepto name, dni, months y status
       this.formResident.patchValue({
         accomodation: baseResident.accomodation,
         guardian: baseResident.guardian,
@@ -327,18 +372,12 @@ export class CreateResidentComponent extends AbstractComponent implements OnInit
         value: baseResident.value,
         entryDate: new Date(baseResident.entryDate),
         phone: baseResident.phone,
-        // payment: this.enumService.parsePaymentMethodIds(baseResident.paymentMethod || baseResident.payment || '')
-        // months y status mantienen sus valores por defecto (0 y 1 respectivamente)
       });
 
-      // Deshabilitar campos compartidos, solo permitir editar name y dni
       this.disableSharedFields();
     }
   }
 
-  /**
-   * Deshabilita los campos que se comparten entre registros relacionados
-   */
   private disableSharedFields() {
     const sharedFields = ['accomodation', 'guardian', 'guardianDni', 'address', 'value',
       'entryDate', 'phone', 'payment'];
@@ -346,19 +385,19 @@ export class CreateResidentComponent extends AbstractComponent implements OnInit
     sharedFields.forEach(field => {
       this.formResident.get(field)?.disable();
     });
-    // months y status siempre están disabled, no necesitan cambios
   }
 
-  /**
-   * Habilita todos los campos del formulario excepto months y status que siempre están disabled
-   */
   private enableAllFields() {
     const excepciontFields = ['months'];
     const fields = Object.keys(this.formResident.getRawValue()).filter(f => !excepciontFields.includes(f));
     fields.forEach(field => {
       this.formResident.get(field)?.enable();
     });
-    // months y status siempre permanecen disabled
+    if (this.selected === null) {
+      this.formResident.get('status')?.setValue(1);
+      this.formResident.get('status')?.disable();
+
+    }
   }
 
 }

@@ -71,7 +71,12 @@
             <td *ngFor="let col of getRegularColumns()" [ngClass]="col.class">
                 @switch (col.field) {
                 @case ('receiptNumber') { {{ payment.receiptNumber }} }
-                @case ('resident') { {{ payment.resident.name }} }
+                @case ('resident') { 
+                    {{ payment.resident.name }} 
+                    @if (payment.resident.name2) {
+                        - {{ payment.resident.name2 }}
+                    }
+                }
                 @case ('totalAmount') { $ {{ payment.totalAmount | number: '1.0-0'}} }
                 @case ('date') { {{ payment.date | date: 'dd/MM/yyyy':'':'es-CO' }} }
                 }

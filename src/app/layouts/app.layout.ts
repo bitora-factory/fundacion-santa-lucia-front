@@ -21,7 +21,7 @@ import { TooltipModule } from 'primeng/tooltip';
         TooltipModule
     ],
     template: `<div class="layout-wrapper" [ngClass]="containerClass">
-        <p-toast />
+        <p-toast [attr.appendTo]="'body'"></p-toast>
         <app-topbar></app-topbar>
         <app-sidebar></app-sidebar>
         <div class="layout-main-container">

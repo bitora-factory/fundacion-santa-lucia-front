@@ -66,10 +66,18 @@
                         <div class="col-span-2 cell">{{ receiptData?.payment?.resident?.guardianDni }}</div>
                     </div>
                     <div class="grid grid-cols-12">
-                        <div class="col-span-2 cell cell-bold">Residente</div>
-                        <div class="col-span-6 cell">{{ receiptData?.payment?.resident?.name }}</div>
-                        <div class="col-span-2 cell cell-bold">No. Documento</div>
-                        <div class="col-span-2 cell">{{ receiptData?.payment?.resident?.dni }}</div>
+                        <div class="col-span-2 cell cell-bold" [ngClass]="{'cell-double': receiptData?.payment?.resident?.name2}">Residente</div>
+                        <div class="col-span-6 cell" [ngClass]="{'cell-double': receiptData?.payment?.resident?.name2}">{{ receiptData?.payment?.resident?.name }} 
+                            @if (receiptData?.payment?.resident?.name2) {
+                            - {{ receiptData?.payment?.resident?.name2 }}
+                            }
+                        </div>
+                        <div class="col-span-2 cell cell-bold" [ngClass]="{'cell-double': receiptData?.payment?.resident?.dni2}">No. Documento</div>
+                        <div class="col-span-2 cell" [ngClass]="{'cell-double': receiptData?.payment?.resident?.dni2}">{{ receiptData?.payment?.resident?.dni }}
+                            @if (receiptData?.payment?.resident?.dni2) {
+                            - {{ receiptData?.payment?.resident?.dni2 }}
+                            }
+                        </div>
                     </div>
                     <div class="grid grid-cols-12">
                         <div class="col-span-2 cell cell-bold">No. Residente</div>

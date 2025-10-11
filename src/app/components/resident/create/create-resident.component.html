@@ -10,295 +10,453 @@
         [style]="{ width: '50rem' }"
         (onHide)="onResidentFormHide()">
         <form [formGroup]="formResident">
-            <div class="mt-5">
+            <div>
                 <!-- Toggle para tipo de registro -->
-                <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-                    <label class="text-sm font-medium text-gray-700 mb-3 block">Tipo de residente</label>
-                    <div class="flex gap-4">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input 
-                                type="radio" 
-                                name="registrationType" 
-                                value="new"
-                                [checked]="!isRelation"
-                                (change)="onRegistrationTypeChange(false)"
-                                class="text-blue-600">
-                            <span class="text-sm">Solo</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input 
-                                type="radio" 
-                                name="registrationType" 
-                                value="relation"
-                                [checked]="isRelation"
-                                (change)="onRegistrationTypeChange(true)"
-                                class="text-blue-600">
-                            <span class="text-sm">Relación</span>
-                        </label>
-                    </div>
-                </div>
-    
-                <!-- Selector de residente base (solo si es relación) -->
-                <!-- @if (isRelation) {
-                    <div class="mb-6">
-                        <p-floatlabel class="w-full">
-                            <p-select 
-                                inputId="baseResident" 
-                                formControlName="baseResident"
-                                [options]="baseResidentOptions" 
-                                optionLabel="label"
-                                optionValue="value"
-                                dataKey="value"
-                                [class]="isFieldInvalid('baseResident') ? 'ng-invalid ng-dirty border-red-500' : ''"
-                                (onChange)="onBaseResidentChange($event)"
-                                [showClear]="true"
-                                styleClass="w-full" />
-                            <label for="baseResident">Residente base (datos a compartir)</label>
-                        </p-floatlabel>
-                        @if (isFieldInvalid('baseResident')) {
-                            <small class="text-red-500 text-xs mt-1">{{ getFieldError('baseResident') }}</small>
-                        }
-                        <small class="text-gray-500 text-xs mt-1">=
-                            Seleccione el residente del cual se copiarán los datos compartidos (acomodación, responsable, dirección, etc.)
-                        </small>
-                    </div>
-                } -->
-                
+                 <p-card [style]=" !isRelation ? {'margin-bottom': '2rem', 'margin-top': '0.5rem'} : {'margin-bottom': '0.5rem', 'margin-top': '0.5rem'}">
+                     <!-- <div [ngClass]="!isRelation ? 'p-4 mb-10' : 'p-4 mb-0'"> -->
+                         <div class="flex gap-4">
+                             <label class="text-sm text-gray-700 font-bold">Tipo de residente:</label>
+                             <label class="flex items-center gap-2 cursor-pointer">
+                                 <input 
+                                     type="radio" 
+                                     name="registrationType" 
+                                     value="new"
+                                     [checked]="!isRelation"
+                                     (change)="onRegistrationTypeChange(false)"
+                                     class="text-blue-600"
+                                     [disabled]="disabledRadioBtn">
+                                 <span class="text-sm">Solo</span>
+                             </label>
+                             <label class="flex items-center gap-2 cursor-pointer">
+                                 <input 
+                                     type="radio" 
+                                     name="registrationType" 
+                                     value="relation"
+                                     [checked]="isRelation"
+                                     (change)="onRegistrationTypeChange(true)"
+                                     class="text-blue-600"
+                                     [disabled]="disabledRadioBtn">
+                                 <span class="text-sm">Relación</span>
+                             </label>
+                         </div>
+                     <!-- </div> -->
+                 </p-card>
+                    
                 @if (isRelation) {
-                    <div class="mb-6 p-1 bg-gray-100 rounded-lg">
-                        <label class="text-sm text-center font-medium text-gray-700 block">Residente 1</label>
-                    </div>
-                }
-    
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="gap-3 mb-7">
-                        <p-floatlabel>
-                            <input 
-                                id="name" 
-                                pInputText 
-                                formControlName="name"
-                                [class]="isFieldInvalid('name') ? 'ng-invalid ng-dirty border-red-500' : ''" />
-                            <label for="name">Nombres y apellidos</label>
-                        </p-floatlabel>
-                        @if (isFieldInvalid('name')) {
-                            <small class="text-red-500 text-xs mt-1">{{ getFieldError('name') }}</small>
-                        }
-                    </div>
-                    <div class="gap-3 mb-7">
-                        <p-floatlabel>
-                            <p-inputnumber 
-                                inputId="dni" 
-                                [formControlName]="formControlName.dni"
-                                [class]="isFieldInvalid('dni') ? 'ng-invalid ng-dirty border-red-500' : ''" />
-                            <label for="dni">Cédula</label>
-                        </p-floatlabel>
-                        @if (isFieldInvalid('dni')) {
-                            <small class="text-red-500 text-xs mt-1">{{ getFieldError('dni') }}</small>
-                        }
-                    </div>
-                </div>
-                @if (isRelation) {
-                    <div class="mb-6 p-1 bg-gray-100 rounded-lg">
-                        <label class="text-sm text-center font-medium text-gray-700 block">Residente 2</label>
-                    </div>
+                    <p-fieldset legend="Residente 1">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+                            <div class="gap-3">
+                                <p-floatlabel>
+                                    <input 
+                                        id="name" 
+                                        pInputText 
+                                        formControlName="name"
+                                        [class]="isFieldInvalid('name') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                    <label for="name">Nombres y apellidos</label>
+                                </p-floatlabel>
+                                @if (isFieldInvalid('name')) {
+                                    <small class="text-red-500 text-xs mt-1">{{ getFieldError('name') }}</small>
+                                }
+                            </div>
+                            <div class="gap-3">
+                                <p-floatlabel>
+                                    <p-inputnumber 
+                                        inputId="dni" 
+                                        [formControlName]="formControlName.dni"
+                                        [class]="isFieldInvalid('dni') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                    <label for="dni">Cédula</label>
+                                </p-floatlabel>
+                                @if (isFieldInvalid('dni')) {
+                                    <small class="text-red-500 text-xs mt-1">{{ getFieldError('dni') }}</small>
+                                }
+                            </div>
+                        </div>
+                    </p-fieldset>
+
+                    <p-fieldset legend="Residente 2">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+                            <div class="gap-3">
+                                <p-floatlabel>
+                                    <input 
+                                        id="name" 
+                                        pInputText 
+                                        formControlName="name2"
+                                        [class]="isFieldInvalid('name2') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                    <label for="name">Nombres y apellidos</label>
+                                </p-floatlabel>
+                                @if (isFieldInvalid('name2')) {
+                                    <small class="text-red-500 text-xs mt-1">{{ getFieldError('name2') }}</small>
+                                }
+                            </div>
+                            <div class="gap-3">
+                                <p-floatlabel>
+                                    <p-inputnumber 
+                                        inputId="dni" 
+                                        [formControlName]="formControlName.dni2"
+                                        [class]="isFieldInvalid('dni2') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                    <label for="dni">Cédula</label>
+                                </p-floatlabel>
+                                @if (isFieldInvalid('dni2')) {
+                                    <small class="text-red-500 text-xs mt-1">{{ getFieldError('dni2') }}</small>
+                                }
+                            </div>
+                        </div>
+                    </p-fieldset>
+                } @else {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="gap-3 mb-7">
                             <p-floatlabel>
                                 <input 
                                     id="name" 
                                     pInputText 
-                                    formControlName="name2"
-                                    [class]="isFieldInvalid('name2') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                    formControlName="name"
+                                    [class]="isFieldInvalid('name') ? 'ng-invalid ng-dirty border-red-500' : ''" />
                                 <label for="name">Nombres y apellidos</label>
                             </p-floatlabel>
-                            @if (isFieldInvalid('name2')) {
-                                <small class="text-red-500 text-xs mt-1">{{ getFieldError('name2') }}</small>
+                            @if (isFieldInvalid('name')) {
+                                <small class="text-red-500 text-xs mt-1">{{ getFieldError('name') }}</small>
                             }
                         </div>
                         <div class="gap-3 mb-7">
                             <p-floatlabel>
                                 <p-inputnumber 
                                     inputId="dni" 
-                                    [formControlName]="formControlName.dni2"
-                                    [class]="isFieldInvalid('dni2') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                    [formControlName]="formControlName.dni"
+                                    [class]="isFieldInvalid('dni') ? 'ng-invalid ng-dirty border-red-500' : ''" />
                                 <label for="dni">Cédula</label>
                             </p-floatlabel>
-                            @if (isFieldInvalid('dni2')) {
-                                <small class="text-red-500 text-xs mt-1">{{ getFieldError('dni2') }}</small>
+                            @if (isFieldInvalid('dni')) {
+                                <small class="text-red-500 text-xs mt-1">{{ getFieldError('dni') }}</small>
                             }
                         </div>
                     </div>
                 }
                 
-                <!-- Nota explicativa cuando es relación -->
                 @if (isRelation) {
-                    <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg mb-8">
-                        <p class="text-blue-700 text-xs mt-1">
-                            Los campos siguientes serán compartidos entre ambos residentes.
-                        </p>
+                    <p-fieldset legend="Información compartida">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+                            <div class="gap-3 mb-7">
+                                <p-floatlabel class="w-full md:w-56">
+                                    <p-select 
+                                        inputId="accommodation" 
+                                        [formControlName]="formControlName.accomodation" 
+                                        [options]="accomodationOptions" 
+                                        optionLabel="name"
+                                        optionValue="id"
+                                        styleClass="w-full" 
+                                        appendTo="body"
+                                        [class]="isFieldInvalid('accomodation') ? 'ng-invalid ng-dirty border-red-500' : ''" 
+                                    />
+                                    <label for="accommodation">Acomodación</label>
+                                </p-floatlabel>
+                                @if (isFieldInvalid('accomodation')) {
+                                    <small class="text-red-500 text-xs mt-1">{{ getFieldError('accomodation') }}</small>
+                                }
+                            </div>
+                            <div class="gap-3 mb-7">
+                                <p-floatlabel>
+                                    <input 
+                                        id="guardian" 
+                                        pInputText 
+                                        [formControlName]="formControlName.guardian"
+                                        [class]="isFieldInvalid('guardian') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                    <label for="guardian">Acudiente</label>
+                                </p-floatlabel>
+                                @if (isFieldInvalid('guardian')) {
+                                    <small class="text-red-500 text-xs mt-1">{{ getFieldError('guardian') }}</small>
+                                }
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="gap-3 mb-7">
+                                <p-floatlabel class="w-full md:w-56">
+                                    <p-inputnumber 
+                                        inputId="guardianDni" 
+                                        [formControlName]="formControlName.guardianDni"
+                                        [class]="isFieldInvalid('guardianDni') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                    <label for="guardianDni">Cédula acudiente</label>
+                                </p-floatlabel>
+                                @if (isFieldInvalid('guardianDni')) {
+                                    <small class="text-red-500 text-xs mt-1">{{ getFieldError('guardianDni') }}</small>
+                                }
+                            </div>
+                            <div class="gap-3 mb-7">
+                                <p-floatlabel>
+                                    <input 
+                                        id="guardianAddress" 
+                                        pInputText 
+                                        [formControlName]="formControlName.address"
+                                        [class]="isFieldInvalid('address') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                    <label for="guardianAddress">Dirección</label>
+                                </p-floatlabel>
+                                @if (isFieldInvalid('address')) {
+                                    <small class="text-red-500 text-xs mt-1">{{ getFieldError('address') }}</small>
+                                }
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="gap-3 mb-7">
+                                <p-floatlabel class="w-full md:w-56">
+                                    <p-inputnumber 
+                                        inputId="value" 
+                                        [formControlName]="formControlName.value"
+                                        [class]="isFieldInvalid('value') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                    <label for="value">Valor unitario</label>
+                                </p-floatlabel>
+                                @if (isFieldInvalid('value')) {
+                                    <small class="text-red-500 text-xs mt-1">{{ getFieldError('value') }}</small>
+                                }
+                            </div>
+                            <div class="gap-3 mb-7">
+                                <p-floatlabel>
+                                    <p-datepicker 
+                                        [formControlName]="formControlName.entryDate"
+                                        inputId="icondisplay" 
+                                        id="entryDate"
+                                        appendTo="body"
+                                        [iconDisplay]="'input'" 
+                                        [showIcon]="true" 
+                                        dateFormat="dd/mm/yy"
+                                        [class]="isFieldInvalid('entryDate') ? 'ng-invalid ng-dirty border-red-500' : ''"
+                                    />
+                                    <label for="entryDate">Fecha de ingreso</label>
+                                </p-floatlabel>
+                                @if (isFieldInvalid('entryDate')) {
+                                    <small class="text-red-500 text-xs mt-1">{{ getFieldError('entryDate') }}</small>
+                                }
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="gap-3 mb-7">
+                                <p-floatlabel class="w-full md:w-56">
+                                    <input 
+                                        id="phone" 
+                                        pInputText 
+                                        [formControlName]="formControlName.phone"
+                                        [class]="isFieldInvalid('phone') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                    <label for="phone">Teléfono</label>
+                                </p-floatlabel>
+                                @if (isFieldInvalid('phone')) {
+                                    <small class="text-red-500 text-xs mt-1">{{ getFieldError('phone') }}</small>
+                                }
+                            </div>
+                            <div class="gap-3 mb-7">
+                                <p-floatlabel>
+                                    <p-inputnumber 
+                                        inputId="months" 
+                                        [formControlName]="formControlName.months"
+                                        [class]="isFieldInvalid('months') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                    <label for="months">Meses</label>
+                                </p-floatlabel>
+                                @if (isFieldInvalid('months')) {
+                                    <small class="text-red-500 text-xs mt-1">{{ getFieldError('months') }}</small>
+                                }
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="gap-3">
+                                <p-floatlabel class="w-full md:w-56">
+                                    <p-multiSelect 
+                                        inputId="paymentMethod" 
+                                        [formControlName]="formControlName.paymentMethod" 
+                                        [options]="paymentOptions" 
+                                        optionLabel="name"
+                                        optionValue="id"
+                                        display="chip"
+                                        styleClass="w-full" 
+                                        appendTo="body"
+                                        [class]="isFieldInvalid('paymentMethod') ? 'ng-invalid ng-dirty border-red-500' : ''"
+                                    />
+                                    <label for="payment">Forma de pago</label>
+                                </p-floatlabel>
+                                @if (isFieldInvalid('paymentMethod')) {
+                                    <small class="text-red-500 text-xs mt-1">{{ getFieldError('paymentMethod') }}</small>
+                                }
+                            </div>
+                            <div class="gap-3">
+                                <p-floatlabel class="w-full md:w-56">
+                                    <p-select 
+                                        inputId="status" 
+                                        [formControlName]="formControlName.status" 
+                                        [options]="statusOptions" 
+                                        optionLabel="name"
+                                        optionValue="id"
+                                        styleClass="w-full" 
+                                        appendTo="body"
+                                        [class]="isFieldInvalid('status') ? 'ng-invalid ng-dirty border-red-500' : ''"
+                                        (onChange)="onStatusChange($event)"
+                                    />
+                                    <label for="status">Estado</label>
+                                </p-floatlabel>
+                                @if (isFieldInvalid('status')) {
+                                    <small class="text-red-500 text-xs mt-1">{{ getFieldError('status') }}</small>
+                                }
+                            </div>
+                        </div>
+                    </p-fieldset>
+                } @else {
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="gap-3 mb-7">
+                            <p-floatlabel class="w-full md:w-56">
+                                <p-select 
+                                    inputId="accommodation" 
+                                    [formControlName]="formControlName.accomodation" 
+                                    [options]="accomodationOptions" 
+                                    optionLabel="name"
+                                    optionValue="id"
+                                    styleClass="w-full" 
+                                    appendTo="body"
+                                    [class]="isFieldInvalid('accomodation') ? 'ng-invalid ng-dirty border-red-500' : ''" 
+                                />
+                                <label for="accommodation">Acomodación</label>
+                            </p-floatlabel>
+                            @if (isFieldInvalid('accomodation')) {
+                                <small class="text-red-500 text-xs mt-1">{{ getFieldError('accomodation') }}</small>
+                            }
+                        </div>
+                        <div class="gap-3 mb-7">
+                            <p-floatlabel>
+                                <input 
+                                    id="guardian" 
+                                    pInputText 
+                                    [formControlName]="formControlName.guardian"
+                                    [class]="isFieldInvalid('guardian') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                <label for="guardian">Acudiente</label>
+                            </p-floatlabel>
+                            @if (isFieldInvalid('guardian')) {
+                                <small class="text-red-500 text-xs mt-1">{{ getFieldError('guardian') }}</small>
+                            }
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="gap-3 mb-7">
+                            <p-floatlabel class="w-full md:w-56">
+                                <p-inputnumber 
+                                    inputId="guardianDni" 
+                                    [formControlName]="formControlName.guardianDni"
+                                    [class]="isFieldInvalid('guardianDni') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                <label for="guardianDni">Cédula acudiente</label>
+                            </p-floatlabel>
+                            @if (isFieldInvalid('guardianDni')) {
+                                <small class="text-red-500 text-xs mt-1">{{ getFieldError('guardianDni') }}</small>
+                            }
+                        </div>
+                        <div class="gap-3 mb-7">
+                            <p-floatlabel>
+                                <input 
+                                    id="guardianAddress" 
+                                    pInputText 
+                                    [formControlName]="formControlName.address"
+                                    [class]="isFieldInvalid('address') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                <label for="guardianAddress">Dirección</label>
+                            </p-floatlabel>
+                            @if (isFieldInvalid('address')) {
+                                <small class="text-red-500 text-xs mt-1">{{ getFieldError('address') }}</small>
+                            }
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="gap-3 mb-7">
+                            <p-floatlabel class="w-full md:w-56">
+                                <p-inputnumber 
+                                    inputId="value" 
+                                    [formControlName]="formControlName.value"
+                                    [class]="isFieldInvalid('value') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                <label for="value">Valor unitario</label>
+                            </p-floatlabel>
+                            @if (isFieldInvalid('value')) {
+                                <small class="text-red-500 text-xs mt-1">{{ getFieldError('value') }}</small>
+                            }
+                        </div>
+                        <div class="gap-3 mb-7">
+                            <p-floatlabel>
+                                <p-datepicker 
+                                    [formControlName]="formControlName.entryDate"
+                                    inputId="icondisplay" 
+                                    id="entryDate"
+                                    appendTo="body"
+                                    [iconDisplay]="'input'" 
+                                    [showIcon]="true" 
+                                    dateFormat="dd/mm/yy"
+                                    [class]="isFieldInvalid('entryDate') ? 'ng-invalid ng-dirty border-red-500' : ''"
+                                />
+                                <label for="entryDate">Fecha de ingreso</label>
+                            </p-floatlabel>
+                            @if (isFieldInvalid('entryDate')) {
+                                <small class="text-red-500 text-xs mt-1">{{ getFieldError('entryDate') }}</small>
+                            }
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="gap-3 mb-7">
+                            <p-floatlabel class="w-full md:w-56">
+                                <input 
+                                    id="phone" 
+                                    pInputText 
+                                    [formControlName]="formControlName.phone"
+                                    [class]="isFieldInvalid('phone') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                <label for="phone">Teléfono</label>
+                            </p-floatlabel>
+                            @if (isFieldInvalid('phone')) {
+                                <small class="text-red-500 text-xs mt-1">{{ getFieldError('phone') }}</small>
+                            }
+                        </div>
+                        <div class="gap-3 mb-7">
+                            <p-floatlabel>
+                                <p-inputnumber 
+                                    inputId="months" 
+                                    [formControlName]="formControlName.months"
+                                    [class]="isFieldInvalid('months') ? 'ng-invalid ng-dirty border-red-500' : ''" />
+                                <label for="months">Meses</label>
+                            </p-floatlabel>
+                            @if (isFieldInvalid('months')) {
+                                <small class="text-red-500 text-xs mt-1">{{ getFieldError('months') }}</small>
+                            }
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="gap-3 mb-7">
+                            <p-floatlabel class="w-full md:w-56">
+                                <p-multiSelect 
+                                    inputId="paymentMethod" 
+                                    [formControlName]="formControlName.paymentMethod" 
+                                    [options]="paymentOptions" 
+                                    optionLabel="name"
+                                    optionValue="id"
+                                    display="chip"
+                                    styleClass="w-full" 
+                                    appendTo="body"
+                                    [class]="isFieldInvalid('paymentMethod') ? 'ng-invalid ng-dirty border-red-500' : ''"
+                                />
+                                <label for="payment">Forma de pago</label>
+                            </p-floatlabel>
+                            @if (isFieldInvalid('paymentMethod')) {
+                                <small class="text-red-500 text-xs mt-1">{{ getFieldError('paymentMethod') }}</small>
+                            }
+                        </div>
+                        <div class="gap-3 mb-7">
+                            <p-floatlabel class="w-full md:w-56">
+                                <p-select 
+                                    inputId="status" 
+                                    [formControlName]="formControlName.status" 
+                                    [options]="statusOptions" 
+                                    optionLabel="name"
+                                    optionValue="id"
+                                    styleClass="w-full" 
+                                    appendTo="body"
+                                    [class]="isFieldInvalid('status') ? 'ng-invalid ng-dirty border-red-500' : ''"
+                                    (onChange)="onStatusChange($event)"
+                                />
+                                <label for="status">Estado</label>
+                            </p-floatlabel>
+                            @if (isFieldInvalid('status')) {
+                                <small class="text-red-500 text-xs mt-1">{{ getFieldError('status') }}</small>
+                            }
+                        </div>
                     </div>
                 }
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="gap-3 mb-7">
-                        <p-floatlabel class="w-full md:w-56">
-                            <p-select 
-                                inputId="accommodation" 
-                                [formControlName]="formControlName.accomodation" 
-                                [options]="accomodationOptions" 
-                                optionLabel="name"
-                                optionValue="id"
-                                styleClass="w-full" 
-                                appendTo="body"
-                                [class]="isFieldInvalid('accomodation') ? 'ng-invalid ng-dirty border-red-500' : ''" 
-                            />
-                            <label for="accommodation">Acomodación</label>
-                        </p-floatlabel>
-                        @if (isFieldInvalid('accomodation')) {
-                            <small class="text-red-500 text-xs mt-1">{{ getFieldError('accomodation') }}</small>
-                        }
-                    </div>
-                    <div class="gap-3 mb-7">
-                        <p-floatlabel>
-                            <input 
-                                id="guardian" 
-                                pInputText 
-                                [formControlName]="formControlName.guardian"
-                                [class]="isFieldInvalid('guardian') ? 'ng-invalid ng-dirty border-red-500' : ''" />
-                            <label for="guardian">Acudiente</label>
-                        </p-floatlabel>
-                        @if (isFieldInvalid('guardian')) {
-                            <small class="text-red-500 text-xs mt-1">{{ getFieldError('guardian') }}</small>
-                        }
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="gap-3 mb-7">
-                        <p-floatlabel class="w-full md:w-56">
-                            <p-inputnumber 
-                                inputId="guardianDni" 
-                                [formControlName]="formControlName.guardianDni"
-                                [class]="isFieldInvalid('guardianDni') ? 'ng-invalid ng-dirty border-red-500' : ''" />
-                            <label for="guardianDni">Cédula acudiente</label>
-                        </p-floatlabel>
-                        @if (isFieldInvalid('guardianDni')) {
-                            <small class="text-red-500 text-xs mt-1">{{ getFieldError('guardianDni') }}</small>
-                        }
-                    </div>
-                    <div class="gap-3 mb-7">
-                        <p-floatlabel>
-                            <input 
-                                id="guardianAddress" 
-                                pInputText 
-                                [formControlName]="formControlName.address"
-                                [class]="isFieldInvalid('address') ? 'ng-invalid ng-dirty border-red-500' : ''" />
-                            <label for="guardianAddress">Dirección</label>
-                        </p-floatlabel>
-                        @if (isFieldInvalid('address')) {
-                            <small class="text-red-500 text-xs mt-1">{{ getFieldError('address') }}</small>
-                        }
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="gap-3 mb-7">
-                        <p-floatlabel class="w-full md:w-56">
-                            <p-inputnumber 
-                                inputId="value" 
-                                [formControlName]="formControlName.value"
-                                [class]="isFieldInvalid('value') ? 'ng-invalid ng-dirty border-red-500' : ''" />
-                            <label for="value">Valor unitario</label>
-                        </p-floatlabel>
-                        @if (isFieldInvalid('value')) {
-                            <small class="text-red-500 text-xs mt-1">{{ getFieldError('value') }}</small>
-                        }
-                    </div>
-                    <div class="gap-3 mb-7">
-                        <p-floatlabel>
-                            <p-datepicker 
-                                [formControlName]="formControlName.entryDate"
-                                inputId="icondisplay" 
-                                id="entryDate"
-                                appendTo="body"
-                                [iconDisplay]="'input'" 
-                                [showIcon]="true" 
-                                dateFormat="dd/mm/yy"
-                                [class]="isFieldInvalid('entryDate') ? 'ng-invalid ng-dirty border-red-500' : ''"
-                            />
-                            <label for="entryDate">Fecha de ingreso</label>
-                        </p-floatlabel>
-                        @if (isFieldInvalid('entryDate')) {
-                            <small class="text-red-500 text-xs mt-1">{{ getFieldError('entryDate') }}</small>
-                        }
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="gap-3 mb-7">
-                        <p-floatlabel class="w-full md:w-56">
-                            <input 
-                                id="phone" 
-                                pInputText 
-                                [formControlName]="formControlName.phone"
-                                [class]="isFieldInvalid('phone') ? 'ng-invalid ng-dirty border-red-500' : ''" />
-                            <label for="phone">Teléfono</label>
-                        </p-floatlabel>
-                        @if (isFieldInvalid('phone')) {
-                            <small class="text-red-500 text-xs mt-1">{{ getFieldError('phone') }}</small>
-                        }
-                    </div>
-                    <div class="gap-3 mb-7">
-                        <p-floatlabel>
-                            <p-inputnumber 
-                                inputId="months" 
-                                [formControlName]="formControlName.months"
-                                [class]="isFieldInvalid('months') ? 'ng-invalid ng-dirty border-red-500' : ''" />
-                            <label for="months">Meses</label>
-                        </p-floatlabel>
-                        @if (isFieldInvalid('months')) {
-                            <small class="text-red-500 text-xs mt-1">{{ getFieldError('months') }}</small>
-                        }
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="gap-3 mb-7">
-                        <p-floatlabel class="w-full md:w-56">
-                            <p-multiSelect 
-                                inputId="paymentMethod" 
-                                [formControlName]="formControlName.paymentMethod" 
-                                [options]="paymentOptions" 
-                                optionLabel="name"
-                                optionValue="id"
-                                display="chip"
-                                styleClass="w-full" 
-                                appendTo="body"
-                                [class]="isFieldInvalid('paymentMethod') ? 'ng-invalid ng-dirty border-red-500' : ''"
-                            />
-                            <label for="payment">Forma de pago</label>
-                        </p-floatlabel>
-                        @if (isFieldInvalid('paymentMethod')) {
-                            <small class="text-red-500 text-xs mt-1">{{ getFieldError('paymentMethod') }}</small>
-                        }
-                    </div>
-                    <div class="gap-3 mb-7">
-                        <p-floatlabel class="w-full md:w-56">
-                            <p-select 
-                                inputId="status" 
-                                [formControlName]="formControlName.status" 
-                                [options]="statusOptions" 
-                                optionLabel="name"
-                                optionValue="id"
-                                styleClass="w-full" 
-                                appendTo="body"
-                                [class]="isFieldInvalid('status') ? 'ng-invalid ng-dirty border-red-500' : ''"
-                            />
-                            <label for="status">Estado</label>
-                        </p-floatlabel>
-                        @if (isFieldInvalid('status')) {
-                            <small class="text-red-500 text-xs mt-1">{{ getFieldError('status') }}</small>
-                        }
-                    </div>
-                </div>
-                <div class="flex justify-center gap-2">
-                    <p-button label="Guardar" (onClick)="confirmSave($event)" />
+                <div class="flex justify-center gap-2 mt-5">
+                    <p-button [disabled]="formResident.get(formControlName.status)?.value === 3" label="Guardar" (onClick)="confirmSave($event)" />
                 </div>
             </div>
         </form>
