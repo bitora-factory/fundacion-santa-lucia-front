@@ -24,9 +24,9 @@ export class AppMenu {
                 label: 'Menú',
                 items: [
                     { label: 'Inicio', icon: 'pi pi-fw pi-home', routerLink: ['/'] },
-                    { label: 'Base de datos', icon: 'pi pi-fw pi-table', routerLink: ['/resident'] },
+                    { label: 'Residentes', icon: 'pi pi-fw pi-table', routerLink: ['/resident'] },
                     { label: 'Generar recibo', icon: 'pi pi-fw pi-table', routerLink: ['/receipt'] },
-                    { label: 'Historial pagos', icon: 'pi pi-fw pi-table', routerLink: ['/payment-history'] },
+                    { label: 'Control de pagos', icon: 'pi pi-fw pi-table', routerLink: ['/payment-control'] },
                 ]
             },
            /*  {

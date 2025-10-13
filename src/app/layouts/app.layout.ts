@@ -27,6 +27,7 @@ import { TooltipModule } from 'primeng/tooltip';
         <div class="layout-main-container">
             <div class="layout-main">
                 <router-outlet></router-outlet>
+                <!-- <img src="assets/img/santa_lucia_logo.png" alt="logo" [style]="{ width: '30rem', aspectRatio: '1 / 1' }"> -->
             </div>
             <!-- <app-footer></app-footer> -->
         </div>

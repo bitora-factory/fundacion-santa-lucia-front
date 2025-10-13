@@ -5,7 +5,8 @@
 ></app-create-resident>
 
 <p-table 
-    scrollHeight="600px"
+    #dt2
+    scrollHeight="490px"
     selectionMode="single"
     [(selection)]="selectedResidents"
     dataKey="residentId"
@@ -13,20 +14,39 @@
     [tableStyle]="{ 'min-width': 'max-content' }" 
     [scrollable]="true"
     [paginator]="true"
-    [rows]="10"
-    [rowsPerPageOptions]="[10, 15, 20, 25]"
+    [rows]="15"
+    [rowsPerPageOptions]="[15, 20, 25]"
     [showCurrentPageReport]="true"
     currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
-    [globalFilterFields]="['resident_id', 'name', 'dni', 'guardian', 'guardianDni', 'address', 'phone', 'entryDate', 'paymentFormatted']"
+    [globalFilterFields]="['residentId', 'name', 'dni']"
     (onFilter)="onTableFilter($event)"
+    showGridlines
+    size="small"
 >
+    <ng-template #caption>
+        <div class="flex">
+            <p-iconfield iconPosition="left" class="ml-auto">
+                <p-inputicon>
+                    <i class="pi pi-search"></i>
+                </p-inputicon>
+                <input pInputText type="text" (input)="onInput($event)" placeholder="Buscar" />
+            </p-iconfield>
+        </div>
+    </ng-template>
     <ng-template pTemplate="header">
         <tr>
-            <th *ngFor="let col of columns" [ngClass]="col.class" pFrozenColumn [frozen]="col.frozen!" [alignFrozen]="col.alignFrozen!">{{col.header}}</th>
+            <th *ngFor="let col of columns"
+                class="!text-center" 
+                pFrozenColumn 
+                [frozen]="col.frozen!" 
+                [alignFrozen]="col.alignFrozen!"
+            >
+                {{col.header}}
+            </th>
             <!-- <th *ngFor="let col of getFrozenColumns()" [ngClass]="col.class" pFrozenColumn [frozen]="true" alignFrozen="right">{{col.header}}</th> -->
         </tr>
-        <tr>
-            <th *ngFor="let col of columns">
+        <!-- <tr>
+            <th *ngFor="let col of columns" class="!text-center">
                 <p-columnFilter 
                     [type]="col.filterType!" 
                     [field]="col.field!" 
@@ -48,33 +68,39 @@
                     </ng-template>
                 }
             </th>
-        </tr>
+        </tr> -->
     </ng-template>
     <ng-template pTemplate="body" let-resident let-rowIndex="rowIndex">
         <!-- (click)="onRowClick(resident, $event)" -->
         <!-- [ngClass]="getRowClass(resident)" -->
         <tr [pSelectableRow]="resident">
-            <td>{{ resident.residentId }}</td>
-            <td>{{ resident.name }}</td>
-            <td>{{ resident.dni }}</td>
-            <td>{{ enumService.getEnumName('accomodation', resident.accomodation) }}</td>
-            <td>{{ resident.guardian }}</td>
-            <td>{{ resident.guardianDni }}</td>
-            <td>{{ resident.address }}</td>
-            <td>{{ resident.phone }}</td>
-            <td>{{ resident.value }}</td>
-            <td>{{ enumService.getPaymentMethodNames(resident.paymentMethod) }}</td>
-            <td>{{ resident.entryDate | date: 'dd/MM/yyyy' }}</td>
-            <td>{{ resident.months }}</td>
-            <td>
-                <span [ngClass]="enumService.getEnumClass('status', resident.status)">
-                    {{ enumService.getEnumName('status', resident.status) }}
+            <td [ngClass]="getColConfig('residentId').class">{{ resident.residentId}}</td>
+            <td [ngClass]="getColConfig('name').class">{{ resident.name }}</td>
+            <td 
+                [ngClass]="getColConfig('dni').class"
+            >{{ resident.dni | number}}</td>
+            <td [ngClass]="getColConfig('accomodation').class">{{ enumService.getEnumName('accomodation', resident.accomodation) }}</td>
+            <td [ngClass]="getColConfig('guardian').class">{{ resident.guardian }}</td>
+            <td [ngClass]="getColConfig('guardianDni').class">{{ resident.guardianDni | number }}</td>
+            <td [ngClass]="getColConfig('address').class">{{ resident.address }}</td>
+            <td [ngClass]="getColConfig('phone').class">{{ resident.phone }}</td>
+            <td [ngClass]="getColConfig('value').class">${{ resident.value | number }}</td>
+            <td [ngClass]="getColConfig('paymentMethod').class">{{ enumService.getPaymentMethodNames(resident.paymentMethod) }}</td>
+            <td [ngClass]="getColConfig('entryDate').class">{{ resident.entryDate | date: 'dd/MM/yyyy' }}</td>
+            <td [ngClass]="getColConfig('months').class">{{ resident.months }}</td>
+            <td [ngClass]="getColConfig('status').class">
+                <span 
+                    [pTooltip]="enumService.getEnumName('status', resident.status)"
+                    [ngClass]="enumService.getEnumClass('status', resident.status)"
+                    class="!text-center">
                 </span> 
             </td>
-            <td pFrozenColumn alignFrozen="right">
+            <td pFrozenColumn alignFrozen="right" class="!text-center">
                 <p-button
                     icon="pi pi-pencil"
-                    pTooltip="Editar residente"
+                    [rounded]="true"
+                    [text]="true"
+                    pTooltip="Editar"
                     tooltipPosition="left"
                     size="small"
                     (click)="editResident(resident)"

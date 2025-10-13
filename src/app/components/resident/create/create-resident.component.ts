@@ -218,6 +218,10 @@ export class CreateResidentComponent extends AbstractComponent implements OnInit
   }
 
   confirmSave(event: Event) {
+    if (this.formResident.get(this.formControlName.status)?.value === 3) {
+      return;
+    }
+    
     let message = '¿Estás seguro de guardar este residente?';
     this.formSubmitted = true;
 

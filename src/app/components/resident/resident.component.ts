@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
-import { TableModule } from 'primeng/table';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Table, TableModule } from 'primeng/table';
 import { RESIDENT_COLUMNS } from '../../metadata/resident.metadata';
 import { CreateResidentComponent } from "./create/create-resident.component";
 import { TooltipModule } from 'primeng/tooltip';
@@ -19,6 +19,9 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { FormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-list-resident',
@@ -32,12 +35,18 @@ import { ConfirmationService } from 'primeng/api';
     SelectModule,
     MultiSelectModule,
     FormsModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    TooltipModule,
+    IconFieldModule,
+    InputIconModule,
+    InputTextModule
   ],
   templateUrl: './resident.component.html',
   styleUrl: './resident.component.scss'
 })
 export class ResidentComponent extends AbstractComponent implements OnInit {
+  @ViewChild('dt2') table!: Table;
+  
   residents: ResidentModel[] = [];
   columns: TableInterface[] = RESIDENT_COLUMNS;
   selectedResident: ResidentModel | null = null;
@@ -224,5 +233,15 @@ export class ResidentComponent extends AbstractComponent implements OnInit {
       accept: () => {
       }
     });
+  }
+
+  getColConfig(field: keyof ResidentModel): TableInterface {
+    const colConfig = RESIDENT_COLUMNS.find(col => col.field === field);
+    return colConfig || {} as TableInterface;
+  }
+
+  onInput(event: any) {
+    const target = event.target as HTMLInputElement;
+    this.table.filterGlobal(event.target.value, 'contains');
   }
 }

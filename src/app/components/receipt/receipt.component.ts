@@ -18,6 +18,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { Table } from 'primeng/table';
 import { CalendarModule } from 'primeng/calendar';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-receipt',
@@ -31,7 +32,8 @@ import { CalendarModule } from 'primeng/calendar';
     DialogModule,
     IconFieldModule,
     InputIconModule,
-    CalendarModule
+    CalendarModule,
+    InputTextModule
   ],
   templateUrl: './receipt.component.html',
   styleUrl: './receipt.component.scss'
@@ -65,7 +67,7 @@ export class ReceiptComponent extends AbstractComponent implements OnInit {
             ...payment,
             date: paymentDate
           };
-        });
+        })
         console.log('Payments with Date objects:', this.payments);
       });
   }

@@ -19,4 +19,11 @@ export interface ResidentModel {
     relationship: number | null;
 }
 
+export interface ResidentPaymentControl {
+    name: string ;
+    value: number;
+    paymentMethod: string;
+    entryDate: Date;
+}
+
 export type EnumType = 'accomodation' | 'paymentMethod' | 'status';

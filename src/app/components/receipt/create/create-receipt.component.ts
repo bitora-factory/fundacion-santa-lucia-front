@@ -4,7 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { TableModule } from 'primeng/table';
 import { PaymentDetailModel } from '../../../models/payment-detail.model';
-import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, MinLengthValidator } from '@angular/forms';
 import { ReceiptInterface } from '../../../models/interfaces/receipt.interface';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumber } from "primeng/inputnumber";
@@ -18,6 +18,7 @@ import { AbstractComponent } from '../../../abstract-component';
 import { PaymentService } from '../../../services/payment.service';
 import { EnumService } from '../../../services/enum.service';
 import { ReceiptService } from '../../../services/receipt.service';
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 @Component({
   selector: 'app-create-receipt',
@@ -30,7 +31,8 @@ import { ReceiptService } from '../../../services/receipt.service';
     FormsModule,
     SelectModule,
     InputNumber,
-    InputTextModule
+    InputTextModule,
+    RadioButtonModule
   ],
   templateUrl: './create-receipt.component.html',
   styleUrls: ['./create-receipt.component.scss']
@@ -64,6 +66,7 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
   residentId: number | null = null;
   residents: ResidentModel[] = [];
   consecutiveNumber: number | null = null;
+  paymentMethod: string | null = null; // Valor por defecto
 
   private residentService = inject(ResidentService);
   private alertService = inject(AlertService);
@@ -117,7 +120,7 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
           const duplicate = set.has(resident.residentId);
           set.add(resident.residentId);
           return !duplicate;
-        });
+        }).filter(resident => resident.status !== 3); // Filtrar residentes con estado 3 (Egresado)
       });
   }
 
@@ -203,7 +206,7 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
 
   }
 
-  async downloadReceipt() {
+  async downloadReceipt(receiptNumber?: number) {
     this.loadingService.show(); // Activar pantalla de carga
 
     try {
@@ -277,7 +280,7 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
         // Pequeña pausa antes de la descarga para mostrar progreso
         await new Promise(resolve => setTimeout(resolve, 200));
 
-        pdf.save(`recibo-fundacion-santa-lucia-${dateStr}.pdf`);
+        pdf.save(`recibo-fundacion-santa-lucia-${receiptNumber}.pdf`);
 
         // Mostrar mensaje de éxito
         this.alertService.success('PDF descargado exitosamente');
@@ -295,6 +298,7 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
   resetReceiptData(): void {
     this.receiptData = null;
     this.residentId = null;
+    this.paymentMethod = null;
   }
 
   calculateTotal(paymentDetail: PaymentDetailModel) {
@@ -322,7 +326,7 @@ export class CreateReceiptComponent extends AbstractComponent implements OnInit 
       .subscribe({
         next: (receipt) => {
           this.alertService.success('Pago guardado exitosamente');
-          this.downloadReceipt(); // Descargar el recibo después de guardar el pago
+          this.downloadReceipt(receipt.data.payment.receiptNumber); // Descargar el recibo después de guardar el pago
           // this.savePaymentDetails(payment.id);
         },
         error: (error) => {

@@ -12,4 +12,5 @@ export interface TableInterface {
     template?: boolean;
     alignFrozen?: 'left' | 'right';
     button?: boolean;
+    format?: string;
 }

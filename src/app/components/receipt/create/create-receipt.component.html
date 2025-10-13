@@ -179,20 +179,28 @@
                         <div class="col-span-4 receipt-border">
                             <div class="cell cell-blue">Forma de pago</div>
                             <div class="grid grid-cols-1 md:grid-cols-2">
-                                <div class="cell cell-bold">Efectivo</div>
                                 <div class="cell text-center">
-                                    @if (receiptData?.payment) {
+                                        <!-- <div class="flex items-center"> -->
+                                            <p-radiobutton name="pizza" value="Cash" [(ngModel)]="paymentMethod" inputId="paymentMethod1" />
+                                            <!-- <label for="paymentMethod1" class="ml-2">Cheese</label> -->
+                                        <!-- </div> -->
+                                    <!-- @if (receiptData?.payment) {
                                         {{ receiptData?.payment?.resident?.paymentMethod === "1" ? 'X' : '' }}
-                                    }
+                                    } -->
                                 </div>
+                                <div class="cell cell-bold">Efectivo</div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2">
-                                <div class="cell cell-bold">Bancario</div>
                                 <div class="cell text-center">
-                                    @if (receiptData?.payment) {
+                                        <!-- <div class="flex items-center"> -->
+                                            <p-radiobutton name="pizza" value="Bank" [(ngModel)]="paymentMethod" inputId="paymentMethod2" />
+                                            <!-- <label for="ingredient2" class="ml-2">Mushroom</label> -->
+                                        <!-- </div> -->
+                                    <!-- @if (receiptData?.payment) {
                                         {{ receiptData?.payment?.resident?.paymentMethod !== "1" ? 'X' : '' }}
-                                    }
+                                    } -->
                                 </div>
+                                <div class="cell cell-bold">Bancario</div>
                             </div>
                         </div>
                         <div class="col-span-8 flex flex-col justify-end items-end">
@@ -209,7 +217,7 @@
             <div class="flex !justify-center gap-3">
                 <p-button 
                     (onClick)="savePayment()" 
-                    [disabled]="!receiptData"
+                    [disabled]="!receiptData || !paymentMethod"
                     label="Generar recibo" 
                     icon="pi pi-download"
                     severity="success"

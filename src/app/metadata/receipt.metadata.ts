@@ -1,9 +1,9 @@
 import { TableInterface } from "../models/interfaces/table.interface";
 
 export const RECEIPT_COLUMNS: TableInterface[] = [
-    { field: 'receiptNumber', header: 'No. RECIBO', class: '!text-center' },
-    { field: 'resident', header: 'RESIDENTE', class: '' },
-    { field: 'totalAmount', header: 'TOTAL', class: '!text-end' },
-    { field: 'date', header: 'FECHA', class: '!text-center' },
-    { field: 'actions', header: 'ACCIONES', class: '!text-center', frozen: true }
+    { field: 'receiptNumber', header: 'Recibo No', class: '!text-center' },
+    { field: 'resident', header: 'Residente', class: '!text-center' },
+    { field: 'totalAmount', header: 'Total', class: '!text-end' },
+    { field: 'date', header: 'Fecha', class: '!text-center' },
+    { field: 'actions', header: '', class: '!text-center', frozen: true }
 ];

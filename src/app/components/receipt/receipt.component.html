@@ -2,33 +2,35 @@
 
 <p-table 
     #dt2
-    scrollHeight="600px" 
+    scrollHeight="490px"
     selectionMode="multiple" 
     [value]="payments" 
     [tableStyle]="{ 'min-width': 'max-content' }"
     [scrollable]="true"
     [paginator]="true"
-    [rows]="10"
-    [rowsPerPageOptions]="[10, 15, 20, 25]"
+    [rows]="15"
+    [rowsPerPageOptions]="[15, 20, 25]"
     [showCurrentPageReport]="true"
     currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
     dataKey="id"
-    [globalFilterFields]="['resident.name', 'date']"
+    [globalFilterFields]="['receiptNumber', 'resident.residentId']"
+    showGridlines
+    size="small"
     >
     <!-- [globalFilterFields]="['resident.name', 'date']" -->
-    <!-- <ng-template #caption>
+    <ng-template #caption>
         <div class="flex">
             <p-iconfield iconPosition="left" class="ml-auto">
                 <p-inputicon>
                     <i class="pi pi-search"></i>
                 </p-inputicon>
-                <input pInputText type="text" (input)="onInput($event)" placeholder="Search keyword" />
+                <input pInputText type="text" (input)="onInput($event)" placeholder="Buscar" />
             </p-iconfield>
         </div>
-    </ng-template> -->
+    </ng-template>
     <ng-template pTemplate="header">
         <tr>
-            <th *ngFor="let col of getRegularColumns()" [ngClass]="col.class">
+            <th *ngFor="let col of getRegularColumns()" class="!text-center">
                 {{col.header}}
                 <!-- <p-columnFilter 
                     type="text" 
@@ -41,7 +43,7 @@
             <th *ngFor="let col of getFrozenColumns()" [ngClass]="col.class" pFrozenColumn [frozen]="true"
                 alignFrozen="right">{{col.header}}</th>
         </tr>
-        <tr>
+        <!-- <tr>
             <th></th>
             <th class="!text-center">
                 <p-columnFilter 
@@ -64,7 +66,7 @@
                 ></p-columnFilter>
             </th>
             <th></th>
-        </tr>
+        </tr> -->
     </ng-template>
     <ng-template pTemplate="body" let-payment let-rowIndex="rowIndex">
         <tr [pSelectableRow]="payment" [pSelectableRowIndex]="rowIndex">
@@ -72,10 +74,7 @@
                 @switch (col.field) {
                 @case ('receiptNumber') { {{ payment.receiptNumber }} }
                 @case ('resident') { 
-                    {{ payment.resident.name }} 
-                    @if (payment.resident.name2) {
-                        - {{ payment.resident.name2 }}
-                    }
+                    {{ payment.resident.residentId }} 
                 }
                 @case ('totalAmount') { $ {{ payment.totalAmount | number: '1.0-0'}} }
                 @case ('date') { {{ payment.date | date: 'dd/MM/yyyy':'':'es-CO' }} }
@@ -85,7 +84,7 @@
                 alignFrozen="right">
                 @switch (col.field) {
                 @case ('actions') {
-                <p-button icon="pi pi-eye" pTooltip="Ver detalle" tooltipPosition="left"
+                <p-button icon="pi pi-eye"[rounded]="true" [text]="true" pTooltip="Ver detalle" tooltipPosition="left"
                     (click)="getDetails(payment)"></p-button>
                 }
                 }
@@ -94,19 +93,19 @@
     </ng-template>
 </p-table>
 
-<p-dialog [header]="`Detalle`" [modal]="true" [(visible)]="visibleDialogDetail" [style]="{ width: '70rem' }">
-    <span class="p-text-secondary block mb-8">Recibo número: {{paymentSelected?.receiptNumber}}</span>
+<p-dialog [header]="`Detalle recibo No. ${paymentSelected?.receiptNumber}`" [modal]="true" [(visible)]="visibleDialogDetail" [style]="{ width: '70rem' }">
+    <!-- <span class="p-text-secondary block mb-8">Recibo número: {{paymentSelected?.receiptNumber}}</span> -->
 
     <p-table 
         [value]="paymentDetails" 
         dataKey="id"
         [tableStyle]="{ 'min-width': '50rem' }"
-        [paginator]="true"
+        >
+        <!-- [paginator]="true"
         [rows]="5"
         [rowsPerPageOptions]="[5, 10, 15]"
         [showCurrentPageReport]="true"
-        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} detalles"
-    >
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} detalles" -->
         <ng-template #header>
             <tr>
                 <th class="cell cell-blue" style="width: 14%;">Código</th>
