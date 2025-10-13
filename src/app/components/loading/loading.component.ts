@@ -14,7 +14,7 @@ import { Observable } from 'rxjs';
           <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
         </div>
         <div class="loading-text">
-          Cargando...
+          <div *ngIf="message">{{ message }}</div>
         </div>
       </div>
     </div>
@@ -56,10 +56,15 @@ import { Observable } from 'rxjs';
 })
 export class LoadingComponent implements OnInit {
   loading$: Observable<boolean>;
+  message: string = 'Cargando...';
 
   constructor(private loadingService: LoadingService) {
     this.loading$ = this.loadingService.loading$;
+
+    setTimeout(() => {
+      this.message = 'Estamos obteniendo los datos, esto puede tardar unos segundos...';
+    }, 3000);
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 }
