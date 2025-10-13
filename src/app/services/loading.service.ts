@@ -1,31 +1,46 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, timeInterval, timeout } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoadingService {
-  private loadingSubject = new BehaviorSubject<boolean>(false);
+  private loadingSubject = new BehaviorSubject<{ isLoading: boolean; message: string }>({ isLoading: false, message: '' });
   public loading$ = this.loadingSubject.asObservable();
-  private loadingRequests = 0;
+  private activeRequests = 0;
+  private messageTimer?: any;
 
-  show(): void {
-    this.loadingRequests++;
-    if (this.loadingRequests === 1) {
-      // Solo mostrar si es la primera solicitud
-      this.loadingSubject.next(true);
+  show(message: string = 'Cargando...'): void {
+    this.activeRequests++;
+    if (this.activeRequests === 1) {
+      this.loadingSubject.next({ isLoading: true, message });
+
+      // Cambiar mensaje si el loading dura más de 3 s
+      this.messageTimer = setTimeout(() => {
+        this.loadingSubject.next({
+          isLoading: true,
+          message: 'Estamos obteniendo los datos, esto puede tardar unos segundos...'
+        });
+      }, 3000);
     }
   }
 
   hide(): void {
-    this.loadingRequests--;
-    if (this.loadingRequests <= 0) {
-      this.loadingRequests = 0;
-      this.loadingSubject.next(false);
-    }
+    // setTimeout(() => {
+      this.activeRequests = Math.max(0, this.activeRequests - 1);
+      if (this.activeRequests === 0) {
+        clearTimeout(this.messageTimer);
+        this.loadingSubject.next({ isLoading: false, message: '' });
+      }
+
+    // }, 10000);
   }
 
   get isLoading(): boolean {
-    return this.loadingSubject.value;
+    return this.loadingSubject.value.isLoading;
+  }
+
+  get loadingMessage(): string {
+    return this.loadingSubject.value.message;
   }
 }

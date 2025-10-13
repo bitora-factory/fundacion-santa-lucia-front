@@ -1,20 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoadingService } from '../../services/loading.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-loading',
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="loading-overlay" *ngIf="loading$ | async">
+    <div class="loading-overlay" *ngIf="loadingService.isLoading">
       <div class="loading-container">
         <div class="loading-spinner">
           <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
         </div>
         <div class="loading-text">
-          <div *ngIf="message">{{ message }}</div>
+          {{ loadingService.loadingMessage }}
         </div>
       </div>
     </div>
@@ -39,7 +38,7 @@ import { Observable } from 'rxjs';
       border-radius: 8px;
       text-align: center;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      min-width: 200px;
+      min-width: 220px;
     }
 
     .loading-spinner {
@@ -54,17 +53,6 @@ import { Observable } from 'rxjs';
     }
   `]
 })
-export class LoadingComponent implements OnInit {
-  loading$: Observable<boolean>;
-  message: string = 'Cargando...';
-
-  constructor(private loadingService: LoadingService) {
-    this.loading$ = this.loadingService.loading$;
-
-    setTimeout(() => {
-      this.message = 'Estamos obteniendo los datos, esto puede tardar unos segundos...';
-    }, 3000);
-  }
-
-  ngOnInit(): void { }
+export class LoadingComponent {
+  constructor(public loadingService: LoadingService) {}
 }
