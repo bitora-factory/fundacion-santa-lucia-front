@@ -58,7 +58,7 @@ export class ResidentComponent extends AbstractComponent implements OnInit {
   visible: boolean = false;
   countActiveResidents: number = 0;
   isSorted: boolean | null = null;
-  statusSelected: number[] = [1];
+  statusSelected: number[] = [];
 
   // Opciones para filtros dropdown - usando enum service
   accommodationOptions: { label: string; value: number; }[] = [];
