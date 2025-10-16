@@ -8,6 +8,7 @@ export const RESIDENT_COLUMNS: TableInterface[] = [
         filterType: 'text',
         matchMode: 'startsWith',
         placeholder: 'Filtrar No.',
+        sortable: true
     },
     {
         field: 'name',
@@ -15,7 +16,8 @@ export const RESIDENT_COLUMNS: TableInterface[] = [
         class: '',
         filterType: 'text',
         matchMode: 'contains',
-        placeholder: 'Filtrar Nombre'
+        placeholder: 'Filtrar Nombre',
+        sortable: true
     },
     {
         field: 'dni',
@@ -24,6 +26,7 @@ export const RESIDENT_COLUMNS: TableInterface[] = [
         filterType: 'numeric',
         matchMode: 'equals',
         placeholder: 'Filtrar Cédula',
+        sortable: true
     },
     {
         field: 'accomodation',
@@ -31,7 +34,8 @@ export const RESIDENT_COLUMNS: TableInterface[] = [
         class: '!text-center',
         filterType: 'text',
         matchMode: 'contains',
-        placeholder: 'Filtrar Acomodación'
+        placeholder: 'Filtrar Acomodación',
+        sortable: true
     },
     {
         field: 'guardian',
@@ -39,7 +43,8 @@ export const RESIDENT_COLUMNS: TableInterface[] = [
         class: '',
         filterType: 'text',
         matchMode: 'contains',
-        placeholder: 'Filtrar Acudiente'
+        placeholder: 'Filtrar Acudiente',
+        sortable: true
     },
     {
         field: 'guardianDni',
@@ -47,7 +52,8 @@ export const RESIDENT_COLUMNS: TableInterface[] = [
         class: '',
         filterType: 'numeric',
         matchMode: 'equals',
-        placeholder: 'Filtrar CC Acudiente'
+        placeholder: 'Filtrar CC Acudiente',
+        sortable: true
     },
     {
         field: 'address',
@@ -55,7 +61,8 @@ export const RESIDENT_COLUMNS: TableInterface[] = [
         class: '',
         filterType: 'text',
         matchMode: 'contains',
-        placeholder: 'Filtrar Dirección'
+        placeholder: 'Filtrar Dirección',
+        sortable: true
     },
     {
         field: 'phone',
@@ -63,7 +70,8 @@ export const RESIDENT_COLUMNS: TableInterface[] = [
         class: '',
         filterType: 'text',
         matchMode: 'contains',
-        placeholder: 'Filtrar Teléfono'
+        placeholder: 'Filtrar Teléfono',
+        sortable: true
     },
     {
         field: 'value',
@@ -71,7 +79,8 @@ export const RESIDENT_COLUMNS: TableInterface[] = [
         class: '!text-end',
         filterType: 'numeric',
         matchMode: 'equals',
-        placeholder: 'Filtrar Valor Unitario'
+        placeholder: 'Filtrar Valor Unitario',
+        sortable: true
     },
     {
         field: 'paymentMethod',
@@ -79,7 +88,8 @@ export const RESIDENT_COLUMNS: TableInterface[] = [
         class: '!text-center',
         filterType: 'text',
         matchMode: 'contains',
-        placeholder: 'Filtrar Forma de Pago'
+        placeholder: 'Filtrar Forma de Pago',
+        sortable: true
     },
     {
         field: 'entryDate',
@@ -87,7 +97,8 @@ export const RESIDENT_COLUMNS: TableInterface[] = [
         class: '!text-center',
         filterType: 'date',
         matchMode: 'equals',
-        placeholder: 'Filtrar Fecha de Ingreso'
+        placeholder: 'Filtrar Fecha de Ingreso',
+        sortable: true
     },
     {
         field: 'months',
@@ -95,13 +106,15 @@ export const RESIDENT_COLUMNS: TableInterface[] = [
         class: '!text-center',
         filterType: 'numeric',
         matchMode: 'equals',
-        placeholder: 'Filtrar Meses'
+        placeholder: 'Filtrar Meses',
+        sortable: true
     },
     {
         field: 'status',
         header: 'Estado',
         class: '!text-center',
-        template: true
+        template: true,
+        sortable: true
     },
     {
         field: 'actions',
@@ -109,6 +122,6 @@ export const RESIDENT_COLUMNS: TableInterface[] = [
         class: '!text-center',
         frozen: true,
         alignFrozen: 'right',
-        button: true
+        button: true,
     }
 ];

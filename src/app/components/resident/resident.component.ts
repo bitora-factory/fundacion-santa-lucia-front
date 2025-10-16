@@ -18,10 +18,11 @@ import { SelectModule } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { FormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, SortEvent } from 'primeng/api';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'app-list-resident',
@@ -39,20 +40,25 @@ import { InputTextModule } from 'primeng/inputtext';
     TooltipModule,
     IconFieldModule,
     InputIconModule,
-    InputTextModule
+    InputTextModule,
+    TagModule
   ],
   templateUrl: './resident.component.html',
   styleUrl: './resident.component.scss'
 })
 export class ResidentComponent extends AbstractComponent implements OnInit {
   @ViewChild('dt2') table!: Table;
-  
+
   residents: ResidentModel[] = [];
+  initialValue: ResidentModel[] = [];
   columns: TableInterface[] = RESIDENT_COLUMNS;
   selectedResident: ResidentModel | null = null;
   selectedResidents: ResidentModel[] = [];
   currentFilteredData: ResidentModel[] = [];
   visible: boolean = false;
+  countActiveResidents: number = 0;
+  isSorted: boolean | null = null;
+  statusSelected: number[] = [1];
 
   // Opciones para filtros dropdown - usando enum service
   accommodationOptions: { label: string; value: number; }[] = [];
@@ -74,6 +80,11 @@ export class ResidentComponent extends AbstractComponent implements OnInit {
   ngOnInit(): void {
     this.initializeEnumOptions();
     this.loadResidents();
+    // Cargar estado seleccionado desde localStorage
+    const savedStatus = localStorage.getItem('residentStatusFilter');
+    if (savedStatus) {
+      this.statusSelected = JSON.parse(savedStatus);
+    }
   }
 
   /**
@@ -111,6 +122,9 @@ export class ResidentComponent extends AbstractComponent implements OnInit {
           entryDate: typeof resident.entryDate === 'string' ? new Date(resident.entryDate) : resident.entryDate,
           // paymentFormatted: this.enumService.getPaymentMethodNames(resident.paymentMethod || '')
         }));
+        this.initialValue = [...this.residents];
+        // Contar residentes activos
+        this.countActiveResidents = this.residents.filter(r => r.status === 1).length;
 
         // Inicializar datos filtrados
         this.currentFilteredData = this.residents;
@@ -243,5 +257,39 @@ export class ResidentComponent extends AbstractComponent implements OnInit {
   onInput(event: any) {
     const target = event.target as HTMLInputElement;
     this.table.filterGlobal(event.target.value, 'contains');
+  }
+
+  customSort(event: SortEvent) {
+    if (this.isSorted == null || this.isSorted === undefined) {
+      this.isSorted = true;
+      this.sortTableData(event);
+    } else if (this.isSorted == true) {
+      this.isSorted = false;
+      this.sortTableData(event);
+    } else if (this.isSorted == false) {
+      this.isSorted = null;
+      this.residents = [...this.initialValue];
+      this.table.reset();
+    }
+  }
+
+  sortTableData(event: SortEvent) {
+    event.data!.sort((data1, data2) => {
+      let value1 = data1[event.field!];
+      let value2 = data2[event.field!];
+      let result = null;
+      if (value1 == null && value2 != null) result = -1;
+      else if (value1 != null && value2 == null) result = 1;
+      else if (value1 == null && value2 == null) result = 0;
+      else if (typeof value1 === 'string' && typeof value2 === 'string') result = value1.localeCompare(value2);
+      else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
+
+      return event.order! * result;
+    });
+  }
+
+  onStatusFilterChange(selectedValues: number[]) {
+    // guardar selectedValues en localStorage
+    localStorage.setItem('residentStatusFilter', JSON.stringify(selectedValues));
   }
 }

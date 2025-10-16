@@ -24,13 +24,29 @@
     size="small"
 >
     <ng-template #caption>
-        <div class="flex">
-            <p-iconfield iconPosition="left" class="ml-auto">
+        <div class="flex justify-content-between align-items-center gap-5">
+            <p-iconfield iconPosition="left" class="">
                 <p-inputicon>
                     <i class="pi pi-search"></i>
                 </p-inputicon>
                 <input pInputText type="text" (input)="onInput($event)" placeholder="Buscar" />
             </p-iconfield>
+            <p-tag severity="info" [value]="`Residentes activos: ${countActiveResidents}`" [rounded]="true" />
+            <p-columnFilter field="status" matchMode="in" [showMenu]="false" [showClearButton]="false" class="ml-auto">
+                <ng-template #filter let-value let-filter="filterCallback">
+                    <label class="mr-2">Filtrar:</label>
+                    <p-multiselect 
+                        [(ngModel)]="statusSelected" 
+                        [options]="statusOptions" 
+                        placeholder="Estado" 
+                        (onChange)="filter($event.value); onStatusFilterChange($event.value)" 
+                        optionLabel="label" 
+                        optionValue="value" 
+                        [style]="{minWidth: '14rem'}" 
+                        [panelStyle]="{ minWidth: '16rem' }">
+                    </p-multiselect>
+                </ng-template>
+            </p-columnFilter>
         </div>
     </ng-template>
     <ng-template pTemplate="header">
@@ -40,8 +56,9 @@
                 pFrozenColumn 
                 [frozen]="col.frozen!" 
                 [alignFrozen]="col.alignFrozen!"
+                [pSortableColumn]="col.field!"
             >
-                {{col.header}}
+                {{col.header}} <p-sortIcon *ngIf="col.sortable" [field]="col.field!" />
             </th>
             <!-- <th *ngFor="let col of getFrozenColumns()" [ngClass]="col.class" pFrozenColumn [frozen]="true" alignFrozen="right">{{col.header}}</th> -->
         </tr>
